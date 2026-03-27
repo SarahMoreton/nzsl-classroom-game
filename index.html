@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NZSL Connections + Wordle PRO</title>
+
+<style>
+body { font-family: Arial; text-align:center; background:#f4f4f4; }
+
+button { padding:10px; margin:5px; cursor:pointer; }
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(4,120px);
+  gap:10px;
+  justify-content:center;
+  margin:20px;
+}
+
+.tile {
+  width:120px;
+  height:120px;
+  border:3px solid #333;
+  border-radius:10px;
+  background:white;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.tile img { width:60px; }
+
+.selected { border:4px solid blue; }
+
+.correct { background:#6aaa64; color:white; }
+.present { background:#c9b458; }
+.wrong { background:#787c7e; color:white; }
+
+#word-bank {
+  display:grid;
+  grid-template-columns:repeat(2,120px);
+  gap:10px;
+}
+
+.word-option img, video { width:100%; }
+
+.fs-letter { width:30px; }
+
+</style>
+</head>
+
+<body>
+
+<h1>NZSL Classroom Game</h1>
+
+<button onclick="startConnections()">Connections</button>
+<button onclick="startWordle()">Wordle</button>
+<button onclick="newGame()">🔄 New Game</button>
+
+<h3 id="message"></h3>
+
+<div id="game"></div>
+
+<script>
+
+// ---------------- DATA ----------------
+const groups = [
+  {cat:"Animals", words:["DOG","CAT","FISH","BIRD"]},
+  {cat:"Food", words:["APPLE","BREAD","MILK","CARROT"]},
+  {cat:"Actions", words:["RUN","EAT","JUMP","SLEEP"]},
+  {cat:"Emotions", words:["HAPPY","SAD","ANGRY","TIRED"]}
+];
+
+let allWords = groups.flatMap(g=>g.words);
+
+// ---------------- CONNECTIONS ----------------
+let selected = [];
+let mistakes = 0;
+
+function startConnections(){
+  document.getElementById("message").innerText = "Find 4 groups of 4";
+  const game = document.getElementById("game");
+
+  let shuffled = [...allWords].sort(()=>0.5-Math.random());
+
+  let html = `<div class="grid">`;
+  shuffled.forEach(word=>{
+    html += `
+      <div class="tile" onclick="selectTile(this,'${word}')">
+        <img src="images/${word}.jpg">
+        <small>${word}</small>
+      </div>`;
+  });
+  html += `</div>
+    <button onclick="submitGroup()">Submit</button>`;
+
+  game.innerHTML = html;
+
+  selected = [];
+  mistakes = 0;
+}
+
+function selectTile(el, word){
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    selected = selected.filter(w=>w!==word);
+  } else if(selected.length < 4){
+    el.classList.add("selected");
+    selected.push(word);
+  }
+}
+
+function submitGroup(){
+  if(selected.length !== 4) return;
+
+  let correctGroup = groups.find(g =>
+    selected.every(w=>g.words.includes(w))
+  );
+
+  if(correctGroup){
+    document.getElementById("message").innerText = "Correct: " + correctGroup.cat;
+    markCorrect(correctGroup.words);
+  } else {
+    mistakes++;
+    document.getElementById("message").innerText =
+      mistakes === 3 ? "Careful! Last chance" : "Try again";
+  }
+
+  selected = [];
+}
+
+function markCorrect(words){
+  document.querySelectorAll(".tile").forEach(tile=>{
+    let text = tile.innerText.trim();
+    if(words.includes(text)){
+      tile.style.background = "#6aaa64";
+    }
+  });
+}
+
+// ---------------- WORDLE ----------------
+let answer = "";
+let attempt = 0;
+
+function startWordle(){
+  answer = allWords[Math.floor(Math.random()*allWords.length)];
+  attempt = 0;
+
+  const game = document.getElementById("game");
+
+  game.innerHTML = `
+    <div style="display:flex; gap:40px; justify-content:center;">
+      <div id="grid"></div>
+      <div id="word-bank"></div>
+    </div>
+  `;
+
+  buildGrid();
+  buildBank();
+}
+
+function buildGrid(){
+  let grid = document.getElementById("grid");
+  grid.innerHTML="";
+
+  for(let i=0;i<6;i++){
+    let row = document.createElement("div");
+    row.style.display="flex";
+
+    for(let j=0;j<answer.length;j++){
+      let tile = document.createElement("div");
+      tile.className="tile";
+      row.appendChild(tile);
+    }
+    grid.appendChild(row);
+  }
+}
+
+function buildBank(){
+  let bank = document.getElementById("word-bank");
+  bank.innerHTML="";
+
+  allWords.forEach(w=>{
+    let div = document.createElement("div");
+    div.className="word-option";
+
+    div.innerHTML = `
+      <video src="videos/${w}.mp4" muted></video>
+      <p>${w}</p>
+    `;
+
+    div.onmouseenter = ()=>div.querySelector("video").play();
+    div.onmouseleave = ()=>div.querySelector("video").pause();
+
+    div.onclick = ()=>guess(w);
+
+    bank.appendChild(div);
+  });
+}
+
+function guess(word){
+  let row = document.getElementById("grid").children[attempt];
+
+  for(let i=0;i<word.length;i++){
+    row.children[i].innerHTML =
+      `<img src="images/fingerspelling/${word[i]}.jpg" class="fs-letter">`;
+
+    if(word[i] === answer[i]){
+      row.children[i].classList.add("correct");
+    } else if(answer.includes(word[i])){
+      row.children[i].classList.add("present");
+    } else {
+      row.children[i].classList.add("wrong");
+    }
+  }
+
+  attempt++;
+}
+
+// ---------------- CONTROLS ----------------
+function newGame(){
+  startConnections();
+}
+
+// LOAD
+startConnections();
+
+</script>
+
+</body>
+</html>
