@@ -232,7 +232,8 @@ let answer = "";
 let attempt = 0;
 
 function startWordle(){
-  answer = allWords[Math.floor(Math.random()*allWords.length)];
+  answer = showWordleChoices();
+
   attempt = 0;
 
   const game = document.getElementById("game");
