@@ -5,7 +5,9 @@
 <title>NZSL Connections + Wordle PRO</title>
 
 
-<style>
+<style>#game {
+  min-height: 300px;
+}
 /* ===== BASE PAGE ===== */
 body {
   font-family: Arial, sans-serif;
@@ -28,7 +30,7 @@ button {
   justify-content: center;
   margin: 20px auto;
 }
-
+#game { min-height: 300px;
 .tile {
   width: 120px;
   height: 120px;
@@ -76,9 +78,11 @@ button {
 #grid .tile {
   width: 50px;
   height: 50px;
-  font-size: 0;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 50px;
+  text-align: center;
 }
-
 /* Fingerspelling */
 .fs-letter {
   width: 30px;
@@ -90,7 +94,7 @@ button {
   font-size: 1.4em;
   margin: 20px;
 }
-
+#grid .tile { font-size: 24px; font-weight: bold; line-height: 50px; }
 
 </style>
 </head>
@@ -311,9 +315,8 @@ function buildBank(){
 function guess(word){
   let row = document.getElementById("grid").children[attempt];
 
-  for(let i=0;i<word.length;i++){
-    row.children[i].innerHTML =
-      `<img src="images/fingerspelling/${word[i]}.jpg" class="fs-letter">`;
+  for(let i = 0; i < word.length; i++){
+    row.children[i].innerText = word[i];
 
     if(word[i] === answer[i]){
       row.children[i].classList.add("correct");
