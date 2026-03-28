@@ -362,9 +362,31 @@ function newGame(){
 }
 
 // LOAD
-// startConnections();
+startConnections();
 
+function startConnections(){
+  document.getElementById("message").innerText = "Find 4 groups of 4";
+  document.getElementById("wordleChoices").innerText = "";
+  const game = document.getElementById("game");
 
+  let shuffled = [...allWords].sort(() => 0.5 - Math.random());
+
+  let html = `<div class="grid">`;
+  shuffled.forEach(word => {
+    html += `
+      <div class="tile" onclick="selectTile(this,'${word}')">
+        <strong>${word}</strong>
+      </div>
+    `;
+  });
+  html += `</div>
+    <button onclick="submitGroup()">Submit</button>`;
+
+  game.innerHTML = html;
+
+  selected = [];
+  mistakes = 0;
+}
 </script>
 
 </body>
