@@ -161,27 +161,18 @@ let allWords = groups.flatMap(g=>g.words);
 let selected = [];
 let mistakes = 0;
 
-function startConnections(){
-  document.getElementById("message").innerText = "Find 4 groups of 4";
+function startWordle(){
+  answer = showWordleChoices();
+  attempt = 0;
+  currentGuess = "";
+
   const game = document.getElementById("game");
 
-  let shuffled = [...allWords].sort(()=>0.5-Math.random());
-
-  let html = `<div class="grid">`;
-  shuffled.forEach(word => {
-  html += `
-    <div class="tile" onclick="selectTile(this,'${word}')">
-      <strong>${word}</strong>
-    </div>
+  game.innerHTML = `
+    <div id="grid"></div>
   `;
-});
-  html += `</div>
-    <button onclick="submitGroup()">Submit</button>`;
 
-  game.innerHTML = html;
-
-  selected = [];
-  mistakes = 0;
+  buildGrid();
 }
 
 function selectTile(el, word){
