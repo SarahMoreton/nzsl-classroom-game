@@ -171,9 +171,9 @@ function startConnections(){
   shuffled.forEach(word=>{
     html += `
       <div class="tile" onclick="selectTile(this,'${word}')">
-        <img src="images/${word}.jpg">
-        <small>${word}</small>
-      </div>`;
+  <strong>${word}</strong>
+</div>
+;
   });
   html += `</div>
     <button onclick="submitGroup()">Submit</button>`;
@@ -274,7 +274,7 @@ function showWordleChoices() {
 
 let answer = "";
 let attempt = 0;
-
+let currentGuess = "";
 function startWordle(){
   answer = showWordleChoices();
 
@@ -352,7 +352,33 @@ function guess(word){
 
   attempt++;
 }
+document.addEventListener("keydown", (e) => {
+  if (!answer) return;
+  if (attempt >= 6) return;
 
+  const row = document.getElementById("grid").children[attempt];
+
+  if (e.key === "Backspace") {
+    currentGuess = currentGuess.slice(0, -1);
+  } 
+  else if (e.key === "Enter") {
+    if (currentGuess.length === answer.length) {
+      guess(currentGuess);
+      currentGuess = "";
+    }
+    return;
+  } 
+  else if (/^[a-zA-Z]$/.test(e.key)) {
+    if (currentGuess.length < answer.length) {
+      currentGuess += e.key.toUpperCase();
+    }
+  }
+
+  // Update row display
+  for (let i = 0; i < answer.length; i++) {
+    row.children[i].innerText = currentGuess[i] || "";
+  }
+});
 // ---------------- CONTROLS ----------------
 function newGame(){
   startConnections();
