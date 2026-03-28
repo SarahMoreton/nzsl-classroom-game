@@ -161,19 +161,6 @@ let allWords = groups.flatMap(g=>g.words);
 let selected = [];
 let mistakes = 0;
 
-function startWordle(){
-  answer = showWordleChoices();
-  attempt = 0;
-  currentGuess = "";
-
-  const game = document.getElementById("game");
-
-  game.innerHTML = `
-    <div id="grid"></div>
-  `;
-
-  buildGrid();
-}
 
 function selectTile(el, word){
   if(el.classList.contains("selected")){
