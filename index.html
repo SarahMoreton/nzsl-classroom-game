@@ -293,20 +293,21 @@ function startWordle(){
   document.getElementById("grid").children[0].style.visibility = "visible";
 }
 
-function buildGrid(){
-  let grid = document.getElementById("grid");
-  grid.innerHTML="";
 
-  for(let i=0;i<6;i++){
-    
-    let row = document.createElement("div");
-    row.style.display="flex";
-document.getElementById("grid").children[attempt-1].style.visibility = "visible";
-    for(let j=0;j<answer.length;j++){
-      let tile = document.createElement("div");
-      tile.className="tile";
+  function buildGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+
+    for (let j = 0; j < answer.length; j++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
       row.appendChild(tile);
     }
+
     grid.appendChild(row);
   }
 }
