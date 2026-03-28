@@ -179,6 +179,55 @@ function markCorrect(words){
 }
 
 // ---------------- WORDLE ----------------
+  // -------- WORDLE: DAILY WORD + 5 CHOICES --------
+
+// Pick a repeatable number from today’s date
+function getDayIndex() {
+  const start = new Date("2024-01-01");
+  const today = new Date();
+  return Math.floor((today - start) / (1000 * 60 * 60 * 24));
+}
+
+// Decide today’s word length: 3, 4, or 5
+function getTodayWordLength() {
+  const lengths = [3, 4, 5];
+  return lengths[getDayIndex() % lengths.length];
+}
+
+// Pick today’s answer word
+function getTodayAnswer() {
+  const length = getTodayWordLength();
+  const words = WORDLE_WORDS[length];
+  return words[getDayIndex() % words.length];
+}
+
+// Pick 5 words (1 answer + 4 distractors)
+function getTodayChoices(answer) {
+  const length = answer.length;
+  const pool = WORDLE_WORDS[length].filter(w => w !== answer);
+
+  // Shuffle pool
+  pool.sort(() => Math.random() - 0.5);
+
+  // Take 4 distractors
+  const choices = pool.slice(0, 4);
+  choices.push(answer);
+
+  // Shuffle final 5
+  return choices.sort(() => Math.random() - 0.5);
+}
+
+// Show the 5 words as plain text
+function showWordleChoices() {
+  const answer = getTodayAnswer();
+  const choices = getTodayChoices(answer);
+
+  const box = document.getElementById("wordleChoices");
+  box.innerText = choices.join("   ");
+
+  return answer;
+}
+``
 let answer = "";
 let attempt = 0;
 
