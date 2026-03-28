@@ -66,6 +66,44 @@ button { padding:10px; margin:5px; cursor:pointer; }
 <script>
 
 // ---------------- DATA ----------------
+  // ---------------- WORDLE WORD BANK ----------------
+// Used ONLY for Wordle (not Connections)
+// Words are grouped by length for low readers
+
+const WORDLE_WORDS = {
+  3: [
+    "DOG",
+    "CAT",
+    "RUN",
+    "EAT",
+    "SIT",
+    "HAT",
+    "SUN",
+    "DAY"
+  ],
+
+  4: [
+    "HELP",
+    "HOME",
+    "HAND",
+    "BOOK",
+    "PLAY",
+    "READ",
+    "WALK",
+    "LOOK"
+  ],
+
+  5: [
+    "HAPPY",
+    "TIRED",
+    "ANGRY",
+    "PROUD",
+    "SADLY",
+    "SMILE",
+    "LAUGH",
+    "FRIEND"
+  ]
+};
 const groups = [
   {cat:"Animals", words:["DOG","CAT","FISH","BIRD"]},
   {cat:"Food", words:["APPLE","BREAD","MILK","CARROT"]},
