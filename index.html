@@ -279,15 +279,15 @@ function startWordle(){
   answer = showWordleChoices();
 
   attempt = 0;
+currentGuess = "";
 
   const game = document.getElementById("game");
 
   game.innerHTML = `
-    <div style="display:flex; gap:40px; justify-content:center;">
-      <div id="grid"></div>
-      <div id="word-bank"></div>
-    </div>
-  `;
+    
+  <div id="grid"></div>
+;
+
 
   buildGrid();
   document.getElementById("grid").children[0].style.visibility = "visible";
@@ -352,7 +352,9 @@ function guess(word){
 
   attempt++;
 }
-document.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", (e) => { const grid = document.getElementById("grid");
+  if (!grid) return;
+
   if (!answer) return;
   if (attempt >= 6) return;
 
