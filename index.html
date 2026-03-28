@@ -168,13 +168,13 @@ function startConnections(){
   let shuffled = [...allWords].sort(()=>0.5-Math.random());
 
   let html = `<div class="grid">`;
-  shuffled.forEach(word=>{
-    html += `
-      <div class="tile" onclick="selectTile(this,'${word}')">
-  <strong>${word}</strong>
-</div>
-;
-  });
+  shuffled.forEach(word => {
+  html += `
+    <div class="tile" onclick="selectTile(this,'${word}')">
+      <strong>${word}</strong>
+    </div>
+  `;
+});
   html += `</div>
     <button onclick="submitGroup()">Submit</button>`;
 
@@ -358,7 +358,8 @@ document.addEventListener("keydown", (e) => { const grid = document.getElementBy
   if (!answer) return;
   if (attempt >= 6) return;
 
-  const row = document.getElementById("grid").children[attempt];
+  const row = grid.children[attempt];
+if (!row) return;
 
   if (e.key === "Backspace") {
     currentGuess = currentGuess.slice(0, -1);
@@ -387,7 +388,8 @@ function newGame(){
 }
 
 // LOAD
-startConnections();
+// startConnections();
+
 
 </script>
 
