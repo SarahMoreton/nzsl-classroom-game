@@ -88,6 +88,20 @@ button {
   margin: 20px;
 }
 </style>
+  #grid .tile.correct {
+  background-color: #6aaa64 !important;
+  color: white;
+}
+
+#grid .tile.present {
+  background-color: #c9b458 !important;
+  color: black;
+}
+
+#grid .tile.wrong {
+  background-color: #787c7e !important;
+  color: white;
+}
 </head>
 
 <body>
@@ -344,7 +358,7 @@ if (!row) return;
       currentGuess += e.key.toUpperCase();
     }
   }
-
+rowSubmitted = false;
   // Update row display
   for (let i = 0; i < answer.length; i++) {
     row.children[i].innerText = currentGuess[i] || "";
