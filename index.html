@@ -253,22 +253,18 @@ function showWordleChoices() {
 let answer = "";
 let attempt = 0;
 let currentGuess = "";
-function startWordle(){
+function startWordle() {
   answer = showWordleChoices();
-
   attempt = 0;
-currentGuess = "";
+  currentGuess = "";
 
   const game = document.getElementById("game");
 
   game.innerHTML = `
-    
-  <div id="grid"></div>
-;
-
+    <div id="grid"></div>
+  `;
 
   buildGrid();
-  document.getElementById("grid").children[0].style.visibility = "visible";
 }
 
 
