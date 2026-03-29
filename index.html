@@ -190,10 +190,15 @@ function submitGroup(){
     document.getElementById("message").innerText = "Correct: " + correctGroup.cat;
     markCorrect(correctGroup.words);
   } else {
-    mistakes++;
-    document.getElementById("message").innerText =
-      mistakes === 3 ? "Careful! Last chance" : "Try again";
-  }
+  mistakes++;
+  document.getElementById("message").innerText =
+    mistakes === 3 ? "Careful! Last chance" : "Try again";
+
+  // ✅ CLEAR SELECTION ON WRONG GROUP
+  document.querySelectorAll(".tile.selected").forEach(tile => {
+    tile.classList.remove("selected");
+  });
+}
 
   selected = [];
 }
