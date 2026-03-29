@@ -338,6 +338,8 @@ function buildBank(){
 function guess(word){
   let row = document.getElementById("grid").children[attempt];
 
+  let isCorrect = true;
+
   for(let i = 0; i < word.length; i++){
     row.children[i].innerText = word[i];
 
@@ -345,9 +347,16 @@ function guess(word){
       row.children[i].classList.add("correct");
     } else if(answer.includes(word[i])){
       row.children[i].classList.add("present");
+      isCorrect = false;
     } else {
       row.children[i].classList.add("wrong");
+      isCorrect = false;
     }
+  }
+
+  // ✅ SHOW NZSL VIDEO ONLY IF ENTIRE WORD IS CORRECT
+  if(isCorrect) {
+    showNZSLVideo(answer);
   }
 
   attempt++;
