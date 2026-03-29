@@ -337,8 +337,15 @@ document.addEventListener("keydown", (e) => {
   }
 
   // ENTER → submit guess and STOP
-  else if (e.key === "Enter") {
-    if (currentGuess.length === answer.length) {
+ else if (e.key === "Enter") {
+  e.preventDefault(); // ✅ stop browser button activation
+
+  if (currentGuess.length === answer.length) {
+    guess(currentGuess);
+    currentGuess = "";
+  }
+  return; // ✅ do not rewrite or reset
+}
       guess(currentGuess);
       currentGuess = "";
     }
