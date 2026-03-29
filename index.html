@@ -105,7 +105,9 @@ button {
 <div id="game"></div>
 
 <script>
-
+function blurAllButtons() {
+  document.querySelectorAll("button").forEach(btn => btn.blur());
+}
 // ---------------- DATA ----------------
   // ---------------- WORDLE WORD BANK ----------------
 // Used ONLY for Wordle (not Connections)
