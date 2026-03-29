@@ -284,13 +284,15 @@ function startWordle() {
   currentGuess = "";
 
   const game = document.getElementById("game");
-
-  game.innerHTML = `
-    <div id="grid"></div>
-  `;
+  game.innerHTML = `<div id="grid"></div>`;
 
   buildGrid();
+  blurAllButtons();
+
+  // ✅ HIDE NZSL VIDEO ON NEW WORDLE
+  document.getElementById("nzslVideo").style.display = "none";
 }
+
 
 
   function buildGrid() {
