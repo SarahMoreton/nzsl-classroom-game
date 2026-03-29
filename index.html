@@ -360,42 +360,6 @@ document.addEventListener("keydown", (e) => {
   for (let i = 0; i < answer.length; i++) {
     row.children[i].innerText = currentGuess[i] || "";
   }
-});document.addEventListener("keydown", (e) => {
-  const grid = document.getElementById("grid");
-  if (!grid) return;
-  if (!answer) return;
-  if (attempt >= 6) return;
-
-  const row = grid.children[attempt];
-  if (!row) return;
-
-  // BACKSPACE
-  if (e.key === "Backspace") {
-    currentGuess = currentGuess.slice(0, -1);
-  }
-
-  // ENTER → submit guess and STOP further handling
-  else if (e.key === "Enter") {
-    e.preventDefault(); // 🔒 prevent buttons from firing
-
-    if (currentGuess.length === answer.length) {
-      guess(currentGuess);
-      currentGuess = "";
-    }
-    return;
-  }
-
-  // LETTER KEYS
-  else if (/^[a-zA-Z]$/.test(e.key)) {
-    if (currentGuess.length < answer.length) {
-      currentGuess += e.key.toUpperCase();
-    }
-  }
-
-  // Update display WHILE TYPING ONLY
-  for (let i = 0; i < answer.length; i++) {
-    row.children[i].innerText = currentGuess[i] || "";
-  }
 });
 // ---------------- CONTROLS ----------------
 function newGame(){
