@@ -118,8 +118,15 @@ button {
 function blurAllButtons() {
   document.querySelectorAll("button").forEach(btn => btn.blur());
 }
-  function showNZSLVideo(word) {
-  const container = document.getElementById("nz
+function showNZSLVideo(word) {
+  const container = document.getElementById("nzslVideo");
+  const video = document.getElementById("nzslPlayer");
+
+  video.src = `videos/nzsl/${word}.mp4`;
+  container.style.display = "block";
+  video.load();
+}
+
 // ---------------- DATA ----------------
   // ---------------- WORDLE WORD BANK ----------------
 // Used ONLY for Wordle (not Connections)
