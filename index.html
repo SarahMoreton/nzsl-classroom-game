@@ -338,30 +338,25 @@ document.addEventListener("keydown", (e) => {
     currentGuess = currentGuess.slice(0, -1);
   }
 
-  // ENTER → submit guess and STOP
- else if (e.key === "Enter") {
-  e.preventDefault(); // ✅ stop browser button activation
+  // ENTER → submit guess and STOP further handling
+  else if (e.key === "Enter") {
+    e.preventDefault(); // 🔒 prevent buttons from firing
 
-  if (currentGuess.length === answer.length) {
-    guess(currentGuess);
-    currentGuess = "";
-  }
-  return; // ✅ do not rewrite or reset
-}
+    if (currentGuess.length === answer.length) {
       guess(currentGuess);
       currentGuess = "";
     }
-    return; // IMPORTANT: do not rewrite row after guess
+    return;
   }
 
-  // LETTER KEY
+  // LETTER KEYS
   else if (/^[a-zA-Z]$/.test(e.key)) {
     if (currentGuess.length < answer.length) {
       currentGuess += e.key.toUpperCase();
     }
   }
 
-  // Update display ONLY while typing
+  // Update display WHILE TYPING ONLY
   for (let i = 0; i < answer.length; i++) {
     row.children[i].innerText = currentGuess[i] || "";
   }
