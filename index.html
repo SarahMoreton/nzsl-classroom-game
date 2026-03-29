@@ -406,7 +406,9 @@ function newGame(){
 
 // LOAD
 startConnections();
-
+document.querySelectorAll(".tile").forEach(tile => {
+  tile.style.background = "white";
+});
 function startConnections(){
   document.getElementById("message").innerText = "Find 4 groups of 4";
   document.getElementById("wordleChoices").innerText = "";
