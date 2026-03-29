@@ -115,16 +115,7 @@ button {
   <h3>NZSL</h3>
   <video id="nzslPlayer" controls width="320"></video>
 </div>
-  function showNZSLVideo(word) {
-  const container = document.getElementById("nzslVideo");
-  const video = document.getElementById("nzslPlayer");
-
-  video.src = `videos/nzsl/${word}.mp4`;
-  container.style.display = "block";
-
-  video.load();
-}
-
+  
 <script>
 function blurAllButtons() {
   document.querySelectorAll("button").forEach(btn => btn.blur());
