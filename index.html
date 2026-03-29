@@ -280,7 +280,12 @@ let answer = "";
 let attempt = 0;
 let currentGuess = "";
 function startWordle() {
-  answer = showWordleChoices();
+  answer = getRandomAnswer();
+const choices = getTodayChoices(answer);
+
+const box = document.getElementById("wordleChoices");
+box.innerText = choices.join("   ");
+
   attempt = 0;
   currentGuess = "";
 
