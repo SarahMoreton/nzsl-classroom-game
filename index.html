@@ -111,7 +111,10 @@ button {
 <h3 id="message"></h3>
 <div id="wordleChoices" style="margin:20px; font-size:1.5em;"></div>
 <div id="game"></div>
-
+<div id="nzslVideo" style="display:none; margin-top:20px;">
+  <h3>NZSL</h3>
+  <video id="nzslPlayer" controls width="320"></video>
+</div>
 <script>
 function blurAllButtons() {
   document.querySelectorAll("button").forEach(btn => btn.blur());
