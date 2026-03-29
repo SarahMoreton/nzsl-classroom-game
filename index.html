@@ -331,25 +331,28 @@ document.addEventListener("keydown", (e) => {
   const row = grid.children[attempt];
   if (!row) return;
 
+  // BACKSPACE
   if (e.key === "Backspace") {
     currentGuess = currentGuess.slice(0, -1);
   }
 
+  // ENTER → submit guess and STOP
   else if (e.key === "Enter") {
     if (currentGuess.length === answer.length) {
       guess(currentGuess);
       currentGuess = "";
     }
-    return;
+    return; // IMPORTANT: do not rewrite row after guess
   }
 
+  // LETTER KEY
   else if (/^[a-zA-Z]$/.test(e.key)) {
     if (currentGuess.length < answer.length) {
       currentGuess += e.key.toUpperCase();
     }
   }
 
-  // Update display for the CURRENT row only
+  // Update display ONLY while typing
   for (let i = 0; i < answer.length; i++) {
     row.children[i].innerText = currentGuess[i] || "";
   }
