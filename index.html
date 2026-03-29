@@ -435,6 +435,12 @@ function startConnections(){
   selected = [];
   mistakes = 0;
 }
+  function getRandomAnswer() {
+  const lengths = Object.keys(WORDLE_WORDS);
+  const length = lengths[Math.floor(Math.random() * lengths.length)];
+  const words = WORDLE_WORDS[length];
+  return words[Math.floor(Math.random() * words.length)];
+}
 </script>
 
 </body>
