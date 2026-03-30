@@ -265,6 +265,7 @@ function checkSelections() {
 }
 function startWordle() {
   const game = document.getElementById("wordleGame");
+  game.innerHTML = "";   // clear safely
 
   answer = getRandomAnswer();
   attempt = 0;
@@ -275,8 +276,9 @@ function startWordle() {
   const choices = getWordleChoices(answer);
   document.getElementById("wordleChoices").innerText = choices.join("   ");
 
- game.innerHTML = "<div id='grid'></div>";
-  const grid = document.getElementById("grid");
+  // build grid WITHOUT innerHTML strings
+  const grid = document.createElement("div");
+  grid.id = "grid";
 
   for (let i = 0; i < 6; i++) {
     const row = document.createElement("div");
@@ -291,12 +293,14 @@ function startWordle() {
     grid.appendChild(row);
   }
 
+  game.appendChild(grid);
+
   document.getElementById("message").innerText =
     "Type letters and press Enter";
 }
 
-// ✅ Wordle keyboard control
-document.addEventListener("keydown", e => {
+// ✅ keyboard support
+document.addEventListener("keydown", function (e) {
   const grid = document.getElementById("grid");
   if (!grid || attempt >= 6) return;
 
@@ -322,14 +326,12 @@ document.addEventListener("keydown", e => {
   }
 });
 
-// ✅ Guess evaluation
 function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
   let correct = true;
 
   for (let i = 0; i < word.length; i++) {
     const tile = row.children[i];
-    tile.textContent = word[i];
 
     if (word[i] === answer[i]) {
       tile.classList.add("correct");
