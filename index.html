@@ -341,12 +341,12 @@ function startConnections() {
 
   let html = `<div class="grid">`;
   allWords.forEach(word => {
-    html += `
-      <div class="tile">
-        <img src="images/connections/${word}.png" alt="${word}">
-        <div>${word}</div>
-      </div>
-    `;
+   html += `
+  <div class="tile">
+    ${word}
+  </div>
+`;
+
   });
   html += `</div>`;
 
