@@ -225,10 +225,12 @@ function startWordle(length) {
   attempt = 0;
   currentGuess = "";
 
- const previewCount = 6; // how many words to show
+ const previewCount = 6;
+const shuffled = [...WORDLE_WORDS[length]].sort(() => Math.random() - 0.5);
+
 document.getElementById("wordleChoices").textContent =
   `${length}-letter words (examples): ` +
-  WORDLE_WORDS[length].slice(0, previewCount).join(", ") +
+  shuffled.slice(0, previewCount).join(", ") +
   " …";
 
 
