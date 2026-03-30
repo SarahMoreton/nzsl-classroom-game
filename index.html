@@ -71,7 +71,7 @@ button {
 
 
 
-<button onclick="startConnections()">🔁 New Connections</button>
+<button id="newConnectionsBtn" onclick="startConnections()">🔁 New Connections</button>
 <h3 id="message"></h3>
 <div id="wordleChoices"></div>
  <div id="connectionsGame"></div>
@@ -177,7 +177,7 @@ Object.keys(NZSL_TOPICS).forEach(topic =>
 /* =====================================================
    CONNECTIONS GAME
 ===================================================== */
-function startConnections() {
+function startConnections() {document.getElementById("
   document.getElementById("wordleMenu").style.display = "none";
   document.getElementById("submitConnectionsBtn").style.display = "inline-block";
 
@@ -227,10 +227,10 @@ function getRandomAnswer() {
    WORDLE GAME
 ===================================================== */
 function startWordle(length, dailyAnswer) {
-  if (!length || !dailyAnswer) {
-    console.warn("Wordle blocked: missing daily configuration");
-    return;
-  }
+  document.getElementById("newConnectionsBtn").style.display = "none";
+  document.getElementById("submitConnectionsBtn").style.display = "none";
+  ...
+}
 
   document.getElementById("wordleMenu").style.display = "block";
   document.getElementById("submitConnectionsBtn").style.display = "none";
@@ -292,12 +292,12 @@ function startWordle(length, dailyAnswer) {
     currentGuess = currentGuess.slice(0, -1);
   }
   else if (e.key === "Enter") {
-    if (currentGuess.length === answer.length) {
-      submitGuess(currentGuess);
-      currentGuess = "";
-    }
-    return;
-  }
+  if (currentGuess.length !== answer.length) return;
+
+  submitGuess(currentGuess);
+  currentGuess = "";
+  return;
+}
   else if (/^[A-Za-z]$/.test(e.key) && currentGuess.length < answer.length) {
     currentGuess += e.key.toUpperCase();
   }
@@ -309,10 +309,9 @@ function startWordle(length, dailyAnswer) {
 function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
 
-  // ✅ FIRST: check for a full correct guess
-  const isCorrect = word === answer;
-
   for (let i = 0; i < word.length; i++) {
+    row.children[i].textContent = word[i];
+
     if (word[i] === answer[i]) {
       row.children[i].classList.add("correct");
     }
@@ -324,15 +323,14 @@ function submitGuess(word) {
     }
   }
 
-  if (isCorrect) {
+  if (word === answer) {
     document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6; // lock Wordle
+    attempt = 6;
   } else {
     document.getElementById("message").textContent = "Try again";
     attempt++;
   }
 }
-
 /* START */
 
   function checkSelections() {
