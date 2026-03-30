@@ -235,17 +235,38 @@ const NZSL_TOPICS = {
 // =====================
 function startConnections() {
   const game = document.getElementById("game");
-  game.innerHTML = `<div class="grid"></div>`;
-  const grid = document.querySelector(".grid");
 
-  Object.values(NZSL_TOPICS).flat().forEach(word => {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.textContent = word;
-    grid.appendChild(tile);
+  // pick 4 topics
+  const topics = Object.keys(NZSL_TOPICS)
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 4);
+
+  // pick 4 words from each topic
+  const groups = topics.map(topic => ({
+    cat: topic,
+    words: NZSL_TOPICS[topic]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 4)
+  }));
+
+  const allWords = groups.flatMap(g => g.words)
+    .sort(() => 0.5 - Math.random());
+
+  let html = `<div class="grid">`;
+  allWords.forEach(word => {
+    html += `
+      <div class="tile">
+        <img src="images/connections/${word}.png" alt="${word}">
+        <div>${word}</div>
+      </div>
+    `;
   });
-}
+  html += `</div>`;
 
+  game.innerHTML = html;
+  document.getElementById("message").innerText = "Find 4 groups of 4";
+  document.getElementById("wordleChoices").innerText = "";
+}
 // =====================
 // START GAME
 // =====================
