@@ -167,7 +167,8 @@ function startWordle() {
   answer = getRandomAnswer();
   attempt = 0;
   currentGuess = "";
-
+const choices = getWordleChoices(answer);
+document.getElementById("wordleChoices").innerText = choices.join("   ");
   const game = document.getElementById("game");
   game.innerHTML = `<div id="grid"></div>`;
 
