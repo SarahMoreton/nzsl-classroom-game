@@ -164,7 +164,10 @@ function getRandomAnswer() {
 // WORDLE GRID
 // =====================
 function startWordle() {
-  const answer = getRandomAnswer();
+  answer = getRandomAnswer();
+  attempt = 0;
+  currentGuess = "";
+
   const game = document.getElementById("game");
   game.innerHTML = `<div id="grid"></div>`;
 
@@ -172,13 +175,17 @@ function startWordle() {
   for (let i = 0; i < 6; i++) {
     const row = document.createElement("div");
     row.style.display = "flex";
+
     for (let j = 0; j < answer.length; j++) {
       const tile = document.createElement("div");
       tile.className = "tile";
       row.appendChild(tile);
     }
+
     grid.appendChild(row);
   }
+
+  document.getElementById("nzslVideo").style.display = "none";
 }
 
 // =====================
