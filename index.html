@@ -363,10 +363,16 @@ function startConnections() {
 
   let html = `<div class="grid">`;
   allWords.forEach(word => {
-   html += `
+  html += `
   <div class="tile">
     <a
-      href="https://www.nzsl.nz
+      href="https://www.google.com/search?q=site:nzsl.nz+${encodeURIComponent(word)}"
+      target="_blank"
+      style="text-decoration:none; color:inherit;"
+    >
+      ${word}
+    </a>
+  </div>
 `;
   });
   html += `</div>`;
