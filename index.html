@@ -144,226 +144,43 @@ button {
 
  
 <script>
-  function toggleSelect(tile) {
-  tile.classList.toggle("selected");
-}
-function checkSelections() {
-  const selected = document.querySelectorAll(".tile.selected");
-
-  if (selected.length !== 4) {
-    document.getElementById("message").innerText =
-      "Select exactly 4 boxes before submitting";
-    return;
-  }
-
-  const words = [...selected].map(tile => tile.innerText.trim());
-  const topics = words.map(word => WORD_TO_TOPIC[word]);
-
-  const allSameTopic = topics.every(t => t === topics[0]);
-
-  if (allSameTopic) {
-    document.getElementById("message").innerText =
-      "✅ Correct! Category: " + topics[0];
-
-    selected.forEach(tile => {
-      tile.classList.remove("selected");
-      tile.classList.add("correct");
-      tile.onclick = null; // lock correct tiles
-    });
-  } else {
-    document.getElementById("message").innerText =
-      "❌ Not a correct group. Try again.";
-
-    selected.forEach(tile => {
-      tile.classList.remove("selected");
-      tile.classList.add("wrong");
-      setTimeout(() => tile.classList.remove("wrong"), 600);
-    });
-  }
-}
-// =====================
-// WORDLE WORD BANK
-// =====================
-const WORDLE_WORDS = {
-  3: [
-    "DOG","CAT","COW","PIG","HEN","BAT","OWL","FOX","ANT","BUG",
-    "SUN","SKY","SEA","DAY","ICE","HOT","WET","DRY","FUN","RED",
-    "BIG","OLD","NEW","TOP","LOW","HAT","BED","CUP","PEN","BOX",
-    "BAG","MAP","CAR","BUS","VAN","KEY","TOY","PAN","POT","LOG",
-    "ARM","LEG","EYE","EAR","LIP","MUM","DAD","BOY","GIRL","MAN",
-    "RUN","SIT","EAT","JAM","ZIP","CAP","RUG","NET","FAN","BEE"
-  ],
-
-  4: [
-    "HOME","HAND","HELP","BOOK","READ","PLAY","WALK","LOOK","OPEN","STOP",
-    "TURN","MOVE","WAIT","COME","GOES","WORK","MAKE","TAKE","SEND","SHOW",
-    "FOOD","RICE","MILK","FISH","MEAT","BREAD","SOUP","CAKE","EGGS","FRUIT",
-    "FAST","SLOW","HARD","SOFT","LOUD","CALM","SAFE","FULL","WARM","COLD",
-    "GOOD","KIND","NICE","MEAN","BEST","LONG","TALL","HIGH","LOW","LEFT"
-  ],
-
-  5: [
-    "HAPPY","SADLY","TIRED","ANGRY","PROUD","CALM","SMILE","LAUGH","BRAVE",
-    "FRIEND","TEACH","LEARN","WRITE","READS","DRINK","EATS","PLAYS","WATCH",
-    "THINK","HELPS","SHARE","SLEEP","WAKES","START","STOPS","BRING","TAKES",
-    "GIVES","HOLDS","CARRY","BREAK","FIXES","MAKES","COOKS","DRIVE","RIDES"
-  ]
-};
-
-// =====================
-// RANDOM WORDLE PICK
-// =====================
-function getRandomAnswer() {
-  const lengths = Object.keys(WORDLE_WORDS);
-  const len = lengths[Math.floor(Math.random() * lengths.length)];
-  const words = WORDLE_WORDS[len];
-  return words[Math.floor(Math.random() * words.length)];
-}
-
-// =====================
-// WORDLE GRID
-// =====================
-function startWordle() {
-  answer = getRandomAnswer();
-  attempt = 0;
-  currentGuess = "";
-const choices = getWordleChoices(answer);
-document.getElementById("wordleChoices").innerText = choices.join("   ");
-  const game = document.getElementById("game");
-  game.innerHTML = `<div id="grid"></div>`;
-
-  const grid = document.getElementById("grid");
-  for (let i = 0; i < 6; i++) {
-    const row = document.createElement("div");
-    row.style.display = "flex";
-
-    for (let j = 0; j < answer.length; j++) {
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      row.appendChild(tile);
-    }
-
-    grid.appendChild(row);
-  }
-
-  document.getElementById("nzslVideo").style.display = "none";
-}
-function submitGuess(word) {
-  const row = document.getElementById("grid").children[attempt];
-  let correct = true;
-
-  for (let i = 0; i < word.length; i++) {
-    const tile = row.children[i];
-    tile.textContent = word[i];
-
-    if (word[i] === answer[i]) {
-      tile.classList.add("correct");
-    } else if (answer.includes(word[i])) {
-      tile.classList.add("present");
-      correct = false;
-    } else {
-      tile.classList.add("wrong");
-      correct = false;
-    }
-  }
-
-  if (correct) {
-    showNZSLVideo(answer);
-  }
-
-  attempt++;
-}
-
-document.addEventListener("keydown", e => {
-  const grid = document.getElementById("grid");
-  if (!grid || attempt >= 6) return;
-
-  const row = grid.children[attempt];
-  if (!row) return;
-
-  if (e.key === "Backspace") {
-    currentGuess = currentGuess.slice(0, -1);
-  } 
-  else if (e.key === "Enter") {
-    e.preventDefault(); // ✅ prevents buttons firing
-    if (currentGuess.length === answer.length) {
-      submitGuess(currentGuess);
-      currentGuess = "";
-    }
-    return;
-  } 
-  else if (/^[a-zA-Z]$/.test(e.key) && currentGuess.length < answer.length) {
-    currentGuess += e.key.toUpperCase();
-  }
-
-  // update row while typing
-  for (let i = 0; i < answer.length; i++) {
-    row.children[i].textContent = currentGuess[i] || "";
-  }
-});
-
- function getWordleChoices(answer, count = 5) {
-  const length = answer.length;
-  const pool = WORDLE_WORDS[length].filter(w => w !== answer);
-
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  const choices = shuffled.slice(0, count - 1);
-
-  choices.push(answer);
-  return choices.sort(() => Math.random() - 0.5);
-}
-
-
-const WORD_TO_TOPIC = {};
-Object.keys(NZSL_TOPICS).forEach(topic => {
-  NZSL_TOPICS[topic].forEach(word => {
-    WORD_TO_TOPIC[word] = topic;
-  
-});
-// =====================
-// CONNECTIONS DATA
-// =====================
+// =======================
+// CONNECTIONS DATA (KEEP ALL WORDS)
+// =======================
 const NZSL_TOPICS = {
   Animals: [
     "DOG","CAT","COW","PIG","HEN","FISH","BAT","OWL","FOX","ANT",
     "BUG","BEE","RAT","MOUSE","GOAT","DEER","DUCK","FROG","SNAKE","SEAL",
     "HORSE","SHEEP","ZEBRA","TIGER","LION","BEAR","CRAB","SHARK","WHALE","SQUID"
   ],
-
   Food: [
     "EAT","FOOD","RICE","MILK","MEAT","FISH","BREAD","SOUP","CAKE","EGGS",
     "CORN","BEANS","APPLE","PEACH","GRAPE","LEMON","LIME","PEAR","PLUM","BERRY",
     "SUGAR","SALT","OIL","HONEY","JUICE","WATER","PASTA","CHEESE","BUTTER","YOGURT"
   ],
-
   Feelings: [
     "HAPPY","SAD","ANGRY","TIRED","PROUD","CALM","SMILE","LAUGH","CRY",
     "AFRAID","BRAVE","BORED","EXCITED","WORRIED","RELAXED","THANKFUL","SORRY",
     "UPSET","GLAD","JOYFUL","KIND","MEAN","LOVED","HURT","SAFE","SCARED"
   ],
-
   Actions: [
     "RUN","WALK","JUMP","EAT","SIT","STAND","LOOK","READ","WRITE","PLAY",
     "WATCH","LISTEN","THINK","TALK","HELP","SHARE","SEND","TAKE","GIVE","HOLD",
     "PUSH","PULL","OPEN","CLOSE","START","STOP","MOVE","WAIT","TRY","CLAP"
   ],
-
   People: [
     "MUM","DAD","BOY","GIRL","MAN","WOMAN","FRIEND","BABY","CHILD","TEACHER",
     "HELPER","LEADER","NEIGHBOUR","UNCLE","AUNT","COACH","NURSE","DOCTOR",
     "WORKER","BOSS"
   ],
-
   Places: [
     "HOME","SCHOOL","PARK","SHOP","ROAD","BEACH","RIVER","LAKE","HILL","CAMP",
     "FARM","TOWN","CITY","ROOM","HALL","OFFICE","FIELD","COURT","TRACK","STAGE"
   ],
-
   Weather: [
     "SUN","RAIN","WIND","CLOUD","STORM","SNOW","HEAT","COLD","WARM","COOL",
     "FOG","FROST","DRY","WET","BREEZE","SHADE","SKY"
   ],
-
   Objects: [
     "BOOK","PEN","BAG","BOX","CUP","HAT","BED","CHAIR","TABLE","PHONE",
     "CLOCK","LIGHT","KEY","DOOR","COAT","SHOE","TOY","BALL","MAP","ROPE",
@@ -371,10 +188,22 @@ const NZSL_TOPICS = {
   ]
 };
 
+// =======================
+// WORD → TOPIC LOOKUP (AFTER DATA)
+// =======================
+const WORD_TO_TOPIC = {};
+Object.keys(NZSL_TOPICS).forEach(topic => {
+  NZSL_TOPICS[topic].forEach(word => {
+    WORD_TO_TOPIC[word] = topic;
+  });
+});
 
-// =====================
+// =======================
 // CONNECTIONS GAME
-// =====================
+// =======================
+function toggleSelect(tile) {
+  tile.classList.toggle("selected");
+}
 
 function startConnections() {
   const game = document.getElementById("game");
@@ -389,22 +218,51 @@ function startConnections() {
     .slice(0, 16);
 
   let html = "<div class='grid'>";
-
   allWords.forEach(word => {
     html += `<div class="tile" onclick="toggleSelect(this)">${word}</div>`;
   });
-
   html += "</div>";
+
   game.innerHTML = html;
   document.getElementById("message").innerText = "Find 4 groups of 4";
 }
 
+function checkSelections() {
+  const selected = document.querySelectorAll(".tile.selected");
 
-// =====================
-// START GAME
-// =====================
+  if (selected.length !== 4) {
+    document.getElementById("message").innerText =
+      "Select exactly 4 tiles";
+    return;
+  }
+
+  const words = [...selected].map(t => t.innerText);
+  const topics = words.map(w => WORD_TO_TOPIC[w]);
+  const correct = topics.every(t => t === topics[0]);
+
+  if (correct) {
+    document.getElementById("message").innerText =
+      "✅ Correct: " + topics[0];
+    selected.forEach(tile => {
+      tile.classList.remove("selected");
+      tile.classList.add("correct");
+      tile.onclick = null;
+    });
+  } else {
+    document.getElementById("message").innerText =
+      "❌ Try again";
+    selected.forEach(tile => {
+      tile.classList.remove("selected");
+      tile.classList.add("wrong");
+      setTimeout(() => tile.classList.remove("wrong"), 600);
+    });
+  }
+}
+
+// =======================
+// START
+// =======================
 startConnections();
-console.log("✅ Script running");
 </script>
 
 </body>
