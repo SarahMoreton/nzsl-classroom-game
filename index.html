@@ -87,18 +87,22 @@ button {
 <div id="wordleGame"></div>
 <script>
   let currentLength = 5;
-  function startWordleMenu() {
+ function startWordleMenu() {
   document.getElementById("connectionsGame").innerHTML = "";
   document.getElementById("submitConnectionsBtn").style.display = "none";
   document.getElementById("wordleMenu").style.display = "block";
 
   document.getElementById("wordleChoices").innerHTML =
-  "<strong>3‑letter:</strong> " + WORDLE_WORDS[3].join(", ") + "<br><br>" +
-  "<strong>4‑letter:</strong> " + WORDLE_WORDS[4].join(", ") + "<br><br>" +
-  "<strong>5‑letter:</strong> " + WORDLE_WORDS[5].join(", ");
+    "<strong>3‑letter:</strong> " + WORDLE_WORDS[3].join(", ") + "<br><br>" +
+    "<strong>4‑letter:</strong> " + WORDLE_WORDS[4].join(", ") + "<br><br>" +
+    "<strong>5‑letter:</strong> " + WORDLE_WORDS[5].join(", ");
 
   document.getElementById("message").textContent =
-    "Choose Wordle difficulty";
+    "Wordle: type letters and press Enter";
+
+  // ✅ START A DEFAULT WORDLE
+  startWordle(3);
+}
 }
 
 
@@ -252,8 +256,11 @@ function startWordle(length) {
     "Type letters and press Enter";
 }
  document.addEventListener("keydown", e => {
+  // ✅ only respond if a Wordle grid exists
   const grid = document.getElementById("grid");
-  if (!grid || attempt >= 6) return;
+  if (!grid) return;
+
+  if (attempt >= 6) return;
 
   const row = grid.children[attempt];
   if (!row) return;
@@ -275,34 +282,8 @@ function startWordle(length) {
   for (let i = 0; i < answer.length; i++) {
     row.children[i].textContent = currentGuess[i] || "";
   }
-
 });
-function submitGuess(word) {
-  const row = document.getElementById("grid").children[attempt];
-  let win = true;
 
-  for (let i = 0; i < word.length; i++) {
-    if (word[i] === answer[i]) {
-      row.children[i].classList.add("correct");
-    } 
-    else if (answer.includes(word[i])) {
-      row.children[i].classList.add("present");
-      win = false;
-    } 
-    else {
-      row.children[i].classList.add("wrong");
-      win = false;
-    }
-  }
-
-  if (win) {
-    document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6; // lock Wordle
-  } else {
-    document.getElementById("message").textContent = "Try again";
-    attempt++;
-  }
-}
 /* START */
 startConnections();
   function checkSelections() {
