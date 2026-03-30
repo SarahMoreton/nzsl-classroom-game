@@ -65,9 +65,8 @@ button {
 
 <!-- Wordle mode buttons -->
 <div id="wordleMenu" style="display:none;">
-  <button id="newConnectionsBtn"
- <button onclick="startWordleMenu()">🔁 Teacher Reset</button> 
-</div>
+  <button onclick="startWordleMenu()">🔁 Teacher Reset</button>
+
 
 
 
@@ -177,12 +176,13 @@ Object.keys(NZSL_TOPICS).forEach(topic =>
 /* =====================================================
    CONNECTIONS GAME
 ===================================================== */
-function startConnections() document.getElementById("newConnectionsBtn").style.display = "inline-block";{
-  // UI controls
+function startConnections() {
   document.getElementById("wordleMenu").style.display = "none";
   document.getElementById("submitConnectionsBtn").style.display = "inline-block";
 
   document.getElementById("wordleGame").innerHTML = "";
+  document.getElementById("wordleChoices").textContent = "";
+
   const game = document.getElementById("connectionsGame");
   game.innerHTML = "";
 
@@ -192,9 +192,7 @@ function startConnections() document.getElementById("newConnectionsBtn").style.d
 
   const words = topics
     .flatMap(t =>
-      NZSL_TOPICS[t]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 4)
+      NZSL_TOPICS[t].sort(() => Math.random() - 0.5).slice(0, 4)
     )
     .sort(() => Math.random() - 0.5);
 
@@ -213,8 +211,6 @@ function startConnections() document.getElementById("newConnectionsBtn").style.d
   document.getElementById("message").textContent =
     "Select 4 words that belong together";
 }
-
-
 
 function getRandomAnswer() {
   const lengths = Object.keys(WORDLE_WORDS);          // ["3","4","5"]
@@ -328,7 +324,7 @@ function submitGuess(word) {
 }
 
 /* START */
-document.addEventListener("DOMContentLoaded", start
+
   function checkSelections() {
   const selected = [...document.querySelectorAll(".tile.selected")];
 
@@ -356,8 +352,9 @@ document.addEventListener("DOMContentLoaded", start
     });
     document.getElementById("message").textContent = "❌ Try again";
   }
-}document.addEventListener("DOMContentLoaded", () => {
-  startConnections();
+
+  document.addEventListener("DOMContentLoaded", () => {
+  startConnections
 });
 </script>
 
