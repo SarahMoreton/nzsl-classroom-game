@@ -71,7 +71,8 @@ button {
 
 
 
-<button id="newConnectionsBtn" onclick="startConnections()">🔁 New Connections</button>
+<button id="newConnectionsBtn" 
+  onclick="startConnections()">🔁 New Connections</button>
 <h3 id="message"></h3>
 <div id="wordleChoices"></div>
  <div id="connectionsGame"></div>
@@ -177,7 +178,8 @@ Object.keys(NZSL_TOPICS).forEach(topic =>
 /* =====================================================
    CONNECTIONS GAME
 ===================================================== */
-function startConnections() {document.getElementById("
+function startConnections() {
+  document.getElementById("newConnectionsBtn").style.display = "inline-block";
   document.getElementById("wordleMenu").style.display = "none";
   document.getElementById("submitConnectionsBtn").style.display = "inline-block";
 
@@ -187,9 +189,11 @@ function startConnections() {document.getElementById("
   currentGuess = "";
   answer = "";
   attempt = 0;
+
   const game = document.getElementById("connectionsGame");
   game.innerHTML = "";
-
+  // (rest of your function below remains unchanged)
+}
   const topics = Object.keys(NZSL_TOPICS)
     .sort(() => Math.random() - 0.5)
     .slice(0, 4);
@@ -229,13 +233,8 @@ function getRandomAnswer() {
 function startWordle(length, dailyAnswer) {
   document.getElementById("newConnectionsBtn").style.display = "none";
   document.getElementById("submitConnectionsBtn").style.display = "none";
-  ...
-}
-
   document.getElementById("wordleMenu").style.display = "block";
-  document.getElementById("submitConnectionsBtn").style.display = "none";
   document.getElementById("connectionsGame").innerHTML = "";
-
   const game = document.getElementById("wordleGame");
   game.innerHTML = "";
 
@@ -293,20 +292,11 @@ function startWordle(length, dailyAnswer) {
   }
   else if (e.key === "Enter") {
   if (currentGuess.length !== answer.length) return;
-
   submitGuess(currentGuess);
   currentGuess = "";
   return;
 }
-  else if (/^[A-Za-z]$/.test(e.key) && currentGuess.length < answer.length) {
-    currentGuess += e.key.toUpperCase();
-  }
-
-  for (let i = 0; i < answer.length; i++) {
-    row.children[i].textContent = currentGuess[i] || "";
-  }
-});
-function submitGuess(word) {
+ function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
 
   for (let i = 0; i < word.length; i++) {
@@ -314,18 +304,16 @@ function submitGuess(word) {
 
     if (word[i] === answer[i]) {
       row.children[i].classList.add("correct");
-    }
-    else if (answer.includes(word[i])) {
+    } else if (answer.includes(word[i])) {
       row.children[i].classList.add("present");
-    }
-    else {
+    } else {
       row.children[i].classList.add("wrong");
     }
   }
 
   if (word === answer) {
     document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6;
+    attempt = 6; // lock the game
   } else {
     document.getElementById("message").textContent = "Try again";
     attempt++;
