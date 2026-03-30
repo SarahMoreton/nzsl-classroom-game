@@ -86,9 +86,14 @@ button {
   document.getElementById("connectionsGame").innerHTML = "";
   document.getElementById("submitConnectionsBtn").style.display = "none";
   document.getElementById("wordleMenu").style.display = "block";
+
+  document.getElementById("wordleChoices").textContent =
+    "3‑letter words: " + WORDLE_WORDS[3].join(", ");
+
   document.getElementById("message").textContent =
     "Choose Wordle difficulty";
 }
+
 
 /* =====================================================
    GLOBAL WORDLE STATE
