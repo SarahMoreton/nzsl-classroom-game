@@ -201,7 +201,32 @@ function startWordle(length) {
   document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid || attempt >= 6) return;
+function submitGuess(word) {
+  const row = document.getElementById("grid").children[attempt];
+  let win = true;
 
+  for (let i = 0; i < word.length; i++) {
+    if (word[i] === answer[i]) {
+      row.children[i].classList.add("correct");
+    }
+    else if (answer.includes(word[i])) {
+      row.children[i].classList.add("present");
+      win = false;
+    }
+    else {
+      row.children[i].classList.add("wrong");
+      win = false;
+    }
+  }
+
+  if (win) {
+    document.getElementById("message").textContent = "🎉 Solved!";
+    attempt = 6; // lock Wordle
+  } else {
+    document.getElementById("message").textContent = "Try again";
+    attempt++;
+  }
+}
   const row = grid.children[attempt];
   if (!row) return;
 
