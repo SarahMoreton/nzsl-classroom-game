@@ -138,7 +138,7 @@ function startWordleMenu() {
 /* =====================================================
    GLOBAL WORDLE STATE
 ===================================================== */
-let answer = "";
+let answer = "DOG";        // change this word whenever you want
 let attempt = 0;
 let currentGuess = "";
 
@@ -279,7 +279,6 @@ function startWordle(length, dailyAnswer) {
 document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid) return;
-  if (attempt >= 6) return;
 
   const row = grid.children[attempt];
   if (!row) return;
@@ -302,7 +301,8 @@ document.addEventListener("keydown", e => {
   }
 });
 
-    function submitGuess(word) {
+
+   function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
 
   for (let i = 0; i < word.length; i++) {
@@ -321,9 +321,8 @@ document.addEventListener("keydown", e => {
 
   if (word === answer) {
     document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6;
+    attempt = 6; // lock game
   } else {
-    document.getElementById("message").textContent = "Try again";
     attempt++;
   }
 }
