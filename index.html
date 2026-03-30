@@ -218,10 +218,10 @@ function startConnections() {
     .slice(0, 16);
 
   let html = "<div class='grid'>";
-  allWords.forEach(word => {
-    html += `<div class="tile" onclick="toggleSelect(this)">${word}</div>`;
-  });
-  html += "</div>";
+allWords.forEach(word => {
+  html += `<div class="tile" onclick="toggleSelect(this)">${word}</div>`;
+});
+html += "</div>";
 
   game.innerHTML = html;
   document.getElementById("message").innerText = "Find 4 groups of 4";
