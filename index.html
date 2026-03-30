@@ -91,13 +91,12 @@ function startWordleMenu() {
   document.getElementById("submitConnectionsBtn").style.display = "none";
   document.getElementById("wordleMenu").style.display = "block";
 
-  document.getElementById("wordleChoices").innerHTML =
-    "<strong>3‑letter:</strong> " + WORDLE_WORDS[3].join(", ") + "<br><br>" +
-    "<strong>4‑letter:</strong> " + WORDLE_WORDS[4].join(", ") + "<br><br>" +
-    "<strong>5‑letter:</strong> " + WORDLE_WORDS[5].join(", ");
+  // ✅ Minimal Wordle hint (NO LISTS)
+  document.getElementById("wordleChoices").textContent =
+    "Choose a Wordle length (3, 4, or 5 letters)";
 
   document.getElementById("message").textContent =
-    "Choose Wordle difficulty";
+    "Wordle: type letters and press Enter";
 }
 /* =====================================================
    GLOBAL WORDLE STATE
@@ -225,13 +224,11 @@ function startWordle(length) {
   attempt = 0;
   currentGuess = "";
 
- const previewCount = 6;
+const previewCount = 6;
 const shuffled = [...WORDLE_WORDS[length]].sort(() => Math.random() - 0.5);
 
 document.getElementById("wordleChoices").textContent =
-  `${length}-letter words (examples): ` +
-  shuffled.slice(0, previewCount).join(", ") +
-  " …";
+  `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
 
 
   const grid = document.createElement("div");
