@@ -250,24 +250,28 @@ document.addEventListener("keydown", e => {
 
 function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
-  let win=true;
-  if (win) {
-  attempt = 6; // stop further guessing
-}
+  let win = true;
 
-
-  for (let i=0;i<word.length;i++) {
-    if (word[i]===answer[i]) row.children[i].classList.add("correct");
-    else if (answer.includes(word[i])) {
-      row.children[i].classList.add("present"); win=false;
-    } else { row.children[i].classList.add("wrong"); win=false; }
+  for (let i = 0; i < word.length; i++) {
+    if (word[i] === answer[i]) {
+      row.children[i].classList.add("correct");
+    } else if (answer.includes(word[i])) {
+      row.children[i].classList.add("present");
+      win = false;
+    } else {
+      row.children[i].classList.add("wrong");
+      win = false;
+    }
   }
 
-  document.getElementById("message").textContent =
-    win ? "🎉 Solved!" : "Try again";
-  attempt++;
+  if (win) {
+    document.getElementById("message").textContent = "🎉 Solved!";
+    attempt = 6; // lock Wordle AFTER success
+  } else {
+    document.getElementById("message").textContent = "Try again";
+    attempt++;
+  }
 }
-
 /* START */
 startConnections();
 </script>
