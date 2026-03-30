@@ -312,13 +312,14 @@ document.addEventListener("keydown", e => {
   choices.push(answer);
   return choices.sort(() => Math.random() - 0.5);
 }
-const WORD_TO_TOPIC = {};
 
-for (const topic in NZSL_TOPICS) {
+
+const WORD_TO_TOPIC = {};
+Object.keys(NZSL_TOPICS).forEach(topic => {
   NZSL_TOPICS[topic].forEach(word => {
     WORD_TO_TOPIC[word] = topic;
-  });
-}
+  
+});
 // =====================
 // CONNECTIONS DATA
 // =====================
