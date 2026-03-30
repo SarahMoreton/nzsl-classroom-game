@@ -9,7 +9,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f4f4f4;
-  margin: 0;
 }
 
 button {
@@ -18,14 +17,14 @@ button {
   cursor: pointer;
 }
 
+/* ---- CONNECTIONS ---- */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 120px);
   gap: 10px;
   justify-content: center;
-  margin: 20px auto;
+  margin: 20px;
 }
-
 .tile {
   width: 120px;
   height: 120px;
@@ -36,14 +35,12 @@ button {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  cursor: pointer;
 }
-
 .selected { border-color: blue; }
 .correct { background:#6aaa64; color:white; }
-.present { background:#c9b458; }
 .wrong { background:#787c7e; color:white; }
 
+/* ---- WORDLE ---- */
 #grid {
   display: flex;
   flex-direction: column;
@@ -55,6 +52,7 @@ button {
   height: 50px;
   font-size: 24px;
 }
+.present { background:#c9b458; }
 </style>
 </head>
 
@@ -74,34 +72,183 @@ button {
 <button onclick="checkSelections()">Submit Connections</button>
 
 <script>
-/* =====================
+/* =====================================================
    GLOBAL WORDLE STATE
-===================== */
+===================================================== */
 let answer = "";
 let attempt = 0;
 let currentGuess = "";
 
-/* =====================
-   CONNECTIONS DATA
-===================== */
+/* =====================================================
+   NZSL CONNECTIONS DATA (LARGE SET)
+===================================================== */
 const NZSL_TOPICS = {
-  Animals: ["DOG","CAT","COW","PIG"],
-  Food: ["RICE","MILK","MEAT","BREAD"],
-  Feelings: ["HAPPY","SAD","ANGRY","CALM"],
-  Actions: ["RUN","WALK","READ","PLAY"]
+  Animals: [
+    "DOG","CAT","COW","PIG","HORSE","SHEEP","GOAT","DUCK","CHICKEN",
+    "FISH","SHARK","WHALE","DOLPHIN","BIRD","OWL","EAGLE","RABBIT",
+    "MOUSE","RAT","LION","TIGER","BEAR"
+  ],
+  Food: [
+    "BREAD","RICE","MILK","CHEESE","APPLE","PEAR","BANANA","ORANGE",
+    "MEAT","FISH","EGGS","PASTA","SOUP","CAKE","BISCUIT","CHIPS",
+    "HONEY","BUTTER","YOGURT","WATER"
+  ],
+  Feelings: [
+    "HAPPY","SAD","ANGRY","CALM","EXCITED","TIRED","SCARED","PROUD",
+    "WORRIED","BORED","SURPRISED","CONFUSED","RELAXED","SAFE","SORRY"
+  ],
+  Actions: [
+    "RUN","WALK","JUMP","SIT","STAND","READ","WRITE","LOOK","LISTEN",
+    "PLAY","EAT","DRINK","HELP","CARRY","OPEN","CLOSE","WAIT"
+  ],
+  People: [
+    "MUM","DAD","BOY","GIRL","TEACHER","FRIEND","BABY","DOCTOR",
+    "NURSE","POLICE","WORKER","HELPER"
+  ]
 };
 
 const WORD_TO_TOPIC = {};
-Object.keys(NZSL_TOPICS).forEach(topic => {
-  NZSL_TOPICS[topic].forEach(word => WORD_TO_TOPIC[word] = topic);
-});
+Object.keys(NZSL_TOPICS).forEach(topic =>
+  NZSL_TOPICS[topic].forEach(word => WORD_TO_TOPIC[word] = topic)
+);
 
-/* =====================
+/* =====================================================
    CONNECTIONS GAME
-===================== */
-function toggleSelect(tile) {
-  tile.classList.toggle("selected");
-}
-
+===================================================== */
 function startConnections() {
   document.getElementById("wordleGame").innerHTML = "";
+  const game = document.getElementById("connectionsGame");
+  game.innerHTML = "";
+
+  const topics = Object.keys(NZSL_TOPICS)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
+
+  const words = topics
+    .flatMap(t => NZSL_TOPICS[t])
+    .sort(() => Math.random() - 0.5)
+    .slice(16);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  words.forEach(w => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = w;
+    tile.onclick = () => tile.classList.toggle("selected");
+    grid.appendChild(tile);
+  });
+
+  game.appendChild(grid);
+  document.getElementById("message").textContent =
+    "Select 4 words that belong together";
+}
+
+function checkSelections() {
+  const selected = [...document.querySelectorAll(".tile.selected")];
+
+  if (selected.length !== 4) {
+    document.getElementById("message").textContent =
+      "Select exactly 4 tiles";
+    return;
+  }
+
+  const topics = selected.map(t => WORD_TO_TOPIC[t.textContent]);
+  const ok = topics.every(t => t === topics[0]);
+
+  selected.forEach(t => t.classList.remove("selected"));
+
+  if (ok) {
+    selected.forEach(t => t.classList.add("correct"));
+    document.getElementById("message").textContent = "✅ Correct";
+  } else {
+    selected.forEach(t => t.classList.add("wrong"));
+    document.getElementById("message").textContent = "❌ Try again";
+  }
+}
+
+/* =====================================================
+   WORDLE DATA (LARGER SET)
+===================================================== */
+const WORDLE_WORDS = [
+  "DOG","CAT","COW","PIG","RUN","WALK","HELP","READ",
+  "PLAY","FISH","BIRD","HAND","EYES","EARS","NOSE",
+  "HAPPY","SAD","ANGRY","PROUD","TIRED"
+];
+
+function getRandomAnswer() {
+  return WORDLE_WORDS[Math.floor(Math.random()*WORDLE_WORDS.length)];
+}
+
+/* =====================================================
+   WORDLE GAME
+===================================================== */
+function startWordle() {
+  document.getElementById("connectionsGame").innerHTML = "";
+  const game = document.getElementById("wordleGame");
+  game.innerHTML = "";
+
+  answer = getRandomAnswer();
+  attempt = 0;
+  currentGuess = "";
+
+  document.getElementById("wordleChoices").textContent =
+    "Choices: " + WORDLE_WORDS.join(", ");
+
+  const grid = document.createElement("div");
+  grid.id = "grid";
+
+  for (let i=0;i<6;i++) {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    for (let j=0;j<answer.length;j++) {
+      row.appendChild(document.createElement("div")).className="tile";
+    }
+    grid.appendChild(row);
+  }
+
+  game.appendChild(grid);
+  document.getElementById("message").textContent =
+    "Type letters and press Enter";
+}
+
+document.addEventListener("keydown", e => {
+  const grid = document.getElementById("grid");
+  if (!grid || attempt>=6) return;
+
+  const row = grid.children[attempt];
+
+  if (e.key==="Backspace") currentGuess = currentGuess.slice(0,-1);
+  else if (e.key==="Enter" && currentGuess.length===answer.length) {
+    submitGuess(currentGuess); currentGuess=""; return;
+  }
+  else if (/^[A-Za-z]$/.test(e.key) && currentGuess.length<answer.length)
+    currentGuess+=e.key.toUpperCase();
+
+  for (let i=0;i<answer.length;i++)
+    row.children[i].textContent=currentGuess[i]||"";
+});
+
+function submitGuess(word) {
+  const row = document.getElementById("grid").children[attempt];
+  let win=true;
+
+  for (let i=0;i<word.length;i++) {
+    if (word[i]===answer[i]) row.children[i].classList.add("correct");
+    else if (answer.includes(word[i])) {
+      row.children[i].classList.add("present"); win=false;
+    } else { row.children[i].classList.add("wrong"); win=false; }
+  }
+
+  document.getElementById("message").textContent =
+    win ? "🎉 Solved!" : "Try again";
+  attempt++;
+}
+
+/* START */
+startConnections();
+</script>
+
+</body>
+</html>
