@@ -84,6 +84,26 @@ button {
 </div>
 <div id="wordleGame"></div>
 <script>
+  /* =====================================================
+   WORDLE DATA (LARGER SET)
+===================================================== */
+  const WORDLE_WORDS = {
+  3: [
+    "DOG","CAT","COW","PIG","RAT","OWL","BAT","ANT",
+    "RUN","EAT","SIT","HOP","ARM","LEG","EYE","EAR"
+  ],
+
+  4: [
+    "FISH","BIRD","MILK","CAKE","READ","PLAY","WALK",
+    "JUMP","LOOK","HELP","HAND","FOOT","NOSE","BACK"
+  ],
+
+  5: [
+    "BREAD","APPLE","HAPPY","ANGRY","TIRED","SMILE",
+    "WATER","TABLE","CHAIR","SHOES","COAST","PLANT"
+  ]
+};
+
   function getTodaySeed() {
   const today = new Date();
   return today.getFullYear() + "-" +
@@ -193,25 +213,7 @@ function startConnections() {
     "Select 4 words that belong together";
 }
 
-/* =====================================================
-   WORDLE DATA (LARGER SET)
-===================================================== */
-const WORDLE_WORDS = {
-  3: [
-    "DOG","CAT","COW","PIG","RAT","OWL","BAT","ANT",
-    "RUN","EAT","SIT","HOP","ARM","LEG","EYE","EAR"
-  ],
 
-  4: [
-    "FISH","BIRD","MILK","CAKE","READ","PLAY","WALK",
-    "JUMP","LOOK","HELP","HAND","FOOT","NOSE","BACK"
-  ],
-
-  5: [
-    "BREAD","APPLE","HAPPY","ANGRY","TIRED","SMILE",
-    "WATER","TABLE","CHAIR","SHOES","COAST","PLANT"
-  ]
-};
 
 function getRandomAnswer() {
   const lengths = Object.keys(WORDLE_WORDS);          // ["3","4","5"]
