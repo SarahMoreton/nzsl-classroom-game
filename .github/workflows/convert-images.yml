@@ -1,0 +1,38 @@
+name: Convert images to PNG
+
+on:
+  push:
+    paths:
+      - "images/connections/**"
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ImageMagick
+        run: sudo apt-get install imagemagick
+
+      - name: Convert images to PNG
+        run: |
+          cd images/connections
+          for f in *.jpg *.jpeg *.webp; do
+            [ -e "$f" ] || continue
+            magick "$f" "${f%.*}.png"
+          done
+
+      - name: Uppercase filenames
+        run: |
+          cd images/connections
+          for f in *.png; do
+            mv "$f" "$(echo $f | tr '[:lower:]' '[:upper:]')"
+          done
+
+      - name: Commit converted images
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add images/connections
+          git commit -m "Auto-convert images to PNG" || echo "No changes"
+          git push
