@@ -125,9 +125,13 @@ function startConnections() {
     .slice(0, 4);
 
   const words = topics
-    .flatMap(t => NZSL_TOPICS[t])
-    .sort(() => Math.random() - 0.5)
-    .slice(16);
+  .flatMap(t =>
+    NZSL_TOPICS[t]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 4)
+  )
+  .sort(() => Math.random() - 0.5);
+
 
   const grid = document.createElement("div");
   grid.className = "grid";
