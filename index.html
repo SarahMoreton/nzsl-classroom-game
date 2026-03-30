@@ -164,20 +164,7 @@ const WORDLE_WORDS = {
 };
 
 
-const NZSL_TOPICS = {
-  Animals: [
-    "DOG","CAT","COW","PIG","HEN","FISH","FOX","OWL","BAT","ANT"
-  ],
-  Food: [
-    "EAT","FOOD","RICE","MILK","MEAT","FISH","BREAD","CAKE","SOUP"
-  ],
-  Feelings: [
-    "HAPPY","SAD","ANGRY","TIRED","PROUD","CALM","SMILE"
-  ],
-  Actions: [
-    "RUN","WALK","JUMP","EAT","SIT","LOOK","READ","WRITE"
-  ]
-};
+
 function checkWordLengths(bank) {
   const bad = [];
   Object.values(bank).forEach(list =>
@@ -229,7 +216,7 @@ const NZSL_TOPICS = {
   ],
 
   People: [
-    "MUM","DAD","BOY","GIRL","MAN","FRIEND","TEACH"
+    "MUM","DAD","BOY","GIRL","MAN","FRIEND","TEACHER",
   ],
 
   Places: [
@@ -411,7 +398,6 @@ function checkWordLengths(wordBank) {
     console.log("✅ All Wordle words are 3–5 letters");
   }
 }
-
 function guess(word){
   let row = document.getElementById("grid").children[attempt];
 
@@ -520,6 +506,17 @@ function startConnections(){
   const words = WORDLE_WORDS[length];
   return words[Math.floor(Math.random() * words.length)];
 }
+  console.log("✅ Script loaded");
+
+document.getElementById("game").innerHTML = `
+  <div style="display:grid; grid-template-columns:repeat(4,120px); gap:10px; justify-content:center;">
+    <div class="tile">TEST</div>
+    <div class="tile">BOX</div>
+    <div class="tile">SHOW</div>
+    <div class="tile">HERE</div>
+  </div>
+`;
+``
 </script>
 
 </body>
