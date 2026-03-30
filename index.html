@@ -118,6 +118,13 @@ button {
 </div>
   
 <script>
+  function showNZSLVideo(word) {
+  const container = document.getElementById("nzslVideo");
+  const video = document.getElementById("nzslPlayer");
+
+  video.src = `videos/nzsl/${word}.mp4`;
+  container.style.display = "block";
+  video.load
   let answer = "";
 let attempt = 0;
 let currentGuess = "";
