@@ -226,7 +226,8 @@ let html = "<div class='grid'>";
 allWords.forEach(word => {
   html += `<div class="tile" onclick="toggleSelect(this)">${word}</div>`;
 });
-html += "</div>";game.innerHTML = html;
+html += "</div>";
+
 
   document.getElementById("message").innerText = "Find 4 groups of 4";
 }
@@ -274,7 +275,7 @@ function startWordle() {
   const choices = getWordleChoices(answer);
   document.getElementById("wordleChoices").innerText = choices.join("   ");
 
-  game.innerHTML = "<div id='grid'></div>";
+ game.innerHTML = "<div id='grid'></div>";
   const grid = document.getElementById("grid");
 
   for (let i = 0; i < 6; i++) {
