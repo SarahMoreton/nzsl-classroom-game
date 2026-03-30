@@ -192,8 +192,7 @@ function startConnections() {
 
   const game = document.getElementById("connectionsGame");
   game.innerHTML = "";
-  // (rest of your function below remains unchanged)
-}
+
   const topics = Object.keys(NZSL_TOPICS)
     .sort(() => Math.random() - 0.5)
     .slice(0, 4);
@@ -290,11 +289,12 @@ function startWordle(length, dailyAnswer) {
   if (e.key === "Backspace") {
     currentGuess = currentGuess.slice(0, -1);
   }
-  else if (e.key === "Enter") {
+else if (e.key === "Enter") {
   if (currentGuess.length !== answer.length) return;
   submitGuess(currentGuess);
   currentGuess = "";
   return;
+
 }
  function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
@@ -304,21 +304,24 @@ function startWordle(length, dailyAnswer) {
 
     if (word[i] === answer[i]) {
       row.children[i].classList.add("correct");
-    } else if (answer.includes(word[i])) {
+    }
+    else if (answer.includes(word[i])) {
       row.children[i].classList.add("present");
-    } else {
+    }
+    else {
       row.children[i].classList.add("wrong");
     }
   }
 
   if (word === answer) {
     document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6; // lock the game
+    attempt = 6;
   } else {
     document.getElementById("message").textContent = "Try again";
     attempt++;
   }
 }
+
 /* START */
 
   function checkSelections() {
