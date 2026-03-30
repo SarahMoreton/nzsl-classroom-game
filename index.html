@@ -367,10 +367,14 @@ function startConnections() {
   allWords.forEach(word => {
     html += `
       <div class="tile">
-        <a
-          href="https://www.google.com/search?q=site:nzsl.nz+${encodeURIComponent(word)}"
-          target="_blank"
-          style="text-decoration:none; colorrHTML = html;
+        ${word}
+      </div>
+    `;
+  });
+
+  html += "</div>";
+
+  game.innerHTML = html;
   document.getElementById("message").innerText = "Find 4 groups of 4";
   document.getElementById("wordleChoices").innerText = "";
 }
