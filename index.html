@@ -135,6 +135,7 @@ button {
 <h3 id="message"></h3>
 <div id="wordleChoices" style="margin:20px; font-size:1.5em;"></div>
 <div id="game"></div>
+  <button onclick="checkSelections()">Submit</button>
 <div id="nzslVideo" style="display:none; margin-top:20px;">
   <h3>NZSL</h3>
   <video id="nzslPlayer" controls width="320"></video>
@@ -146,7 +147,20 @@ button {
   function toggleSelect(tile) {
   tile.classList.toggle("selected");
 }
+function checkSelections() {
+  const selected = document.querySelectorAll(".tile.selected");
 
+  if (selected.length !== 4) {
+    document.getElementById("message").innerText =
+      "Select exactly 4 boxes before submitting";
+    return;
+  }
+
+  const words = [...selected].map(tile => tile.innerText);
+  document.getElementById("message").innerText =
+    "You selected: " + words.join(", ");
+}
+``
 // ✅ GLOBAL WORDLE STATE (must be outside any function)
 let answer = "";
 let attempt = 0;
