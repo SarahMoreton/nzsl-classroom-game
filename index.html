@@ -131,8 +131,9 @@ button {
   let currentLength = 5;
 function startWordleMenu() {
   const daily = getDailyWordle();
-  startWordle(daily.length, daily.answer);document.getElementById("newConnectionsBtn").style.display = "none";
+  startWordle(daily.length, daily.answer);
 }
+
 /* =====================================================
    GLOBAL WORDLE STATE
 ===================================================== */
@@ -362,7 +363,9 @@ document.addEventListener("DOMContentLoaded", start
     });
     document.getElementById("message").textContent = "❌ Try again";
   }
-}
+}document.addEventListener("DOMContentLoaded", () => {
+  startConnections();
+});
 </script>
 
 </body>
