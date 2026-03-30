@@ -377,7 +377,8 @@ function startConnections() {
       .slice(0, 4)
   }));
 
-  const allWords = groups.flatMap(g => g.words)
+  const allWords = groups
+    .flatMap(g => g.words)
     .sort(() => Math.random() - 0.5);
 
   let html = "<div class='grid'>";
