@@ -234,6 +234,30 @@ function submitGuess(word) {
     row.children[i].textContent = currentGuess[i] || "";
   }
 });
+  function getWordleChoices(answer, count = 5) {
+  const length = answer.length;
+  const pool = WORDLE_WORDS[length].filter(w => w !== answer);
+
+  function score(word) {
+    let s = 0;
+    for (let i = 0; i < word.length; i++) {
+      if (word[i] === answer[i]) s += 2;
+      else if (answer.includes(word[i])) s += 1;
+    }
+    return s;
+  }
+
+  const ranked = pool
+    .map(w => ({ w, s: score(w) }))
+    .filter(o => o.s > 0)
+    .sort((a,b) => b.s - a.s)
+    .slice(0, count - 1)
+    .map(o => o.w);
+
+  ranked.push(answer);
+  return ranked.sort(() => Math.random() - 0.5);
+}
+
 // =====================
 // CONNECTIONS DATA
 // =====================
