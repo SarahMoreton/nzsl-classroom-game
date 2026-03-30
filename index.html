@@ -279,7 +279,6 @@ function startWordle(length, dailyAnswer) {
 document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid) return;
-
   if (attempt >= 6) return;
 
   const row = grid.children[attempt];
@@ -328,14 +327,7 @@ document.addEventListener("keydown", e => {
     attempt++;
   }
 }
-else if (e.key === "Enter") {
-  if (currentGuess.length !== answer.length) return;
-  submitGuess(currentGuess);
-  currentGuess = "";
-  return;
 
-}
- 
 
 /* START */
 
