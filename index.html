@@ -193,9 +193,9 @@ const WORDLE_WORDS = {
 };
 
 function getRandomAnswer() {
-  const lengths = Object.keys(WORDLE_WORDS);
-  const len = lengths[Math.floor(Math.random() * lengths.length)];
-  const words = WORDLE_WORDS[len];
+  const lengths = Object.keys(WORDLE_WORDS);          // ["3","4","5"]
+  const length = lengths[Math.floor(Math.random() * lengths.length)];
+  const words = WORDLE_WORDS[length];
   return words[Math.floor(Math.random() * words.length)];
 }
 
