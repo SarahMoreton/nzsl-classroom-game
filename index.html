@@ -357,24 +357,19 @@ function startConnections() {
     .sort(() => Math.random() - 0.5)
     .slice(0, 4);
 
-  const groups = topics.map(topic => ({
-    words: NZSL_TOPICS[topic]
+  const groups = topics.map(t => ({
+    words: NZSL_TOPICS[t]
       .sort(() => Math.random() - 0.5)
       .slice(0, 4)
   }));
 
-  const allWords = groups
-    .flatMap(g => g.words)
+  const allWords = groups.flatMap(g => g.words)
     .sort(() => Math.random() - 0.5);
 
   let html = "<div class='grid'>";
 
   allWords.forEach(word => {
-    html += `
-      <div class="tile" onclick="toggleSelect(this)">
-        ${word}
-      </div>
-    `;
+    html += "<div class='tile' onclick='toggleSelect(this)'>" + word + "</div>";
   });
 
   html += "</div>";
