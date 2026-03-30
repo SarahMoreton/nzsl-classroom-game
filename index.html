@@ -370,16 +370,10 @@ function startConnections() {
         <a
           href="https://www.google.com/search?q=site:nzsl.nz+${encodeURIComponent(word)}"
           target="_blank"
-  `;
-  });
-
-  html += `</div>`;
-
-  game.innerHTML = html;
-  document.getElementById("message").innerText = "Find 4 groups of 4";
+          style="text-decoration:none; color:inherit;"
+       cument.getElementById("message").innerText = "Find 4 groups of 4";
   document.getElementById("wordleChoices").innerText = "";
 }
-
 
 // =====================
 // START GAME
