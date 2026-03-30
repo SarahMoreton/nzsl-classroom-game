@@ -226,8 +226,8 @@ let html = "<div class='grid'>";
 allWords.forEach(word => {
   html += `<div class="tile" onclick="toggleSelect(this)">${word}</div>`;
 });
-html += "</div>";
-  game.innerHTML = html;
+html += "</div>";game.innerHTML = "<div id='grid'></div>";
+
   document.getElementById("message").innerText = "Find 4 groups of 4";
 }
 
@@ -294,30 +294,7 @@ function startWordle() {
   document.getElementById("message").innerText =
     "Type letters and press Enter";
 }
-document.addEventListener("keydown", e => {
-  const grid = document.getElementById("grid");
-  if (!grid || attempt >= 6) return;
-
-  const row = grid.children[attempt];
-  if (!row) return;
-
-  if (e.key === "Backspace") {
-    currentGuess = currentGuess.slice(0, -1);
-  } 
-  else if (e.key === "Enter") {
-    if (currentGuess.length === answer.length) {
-      submitGuess(currentGuess);
-      currentGuess = "";
-    }
-    return;
-  } 
-  else if (/^[a-zA-Z]$/.test(e.key) && currentGuess.length < answer.length) {
-    currentGuess += e.key.toUpperCase();
-  }
-
-  for (let i = 0; i < answer.length; i++) {
-    row.children[i].textContent = currentGuess[i] || "";
-  }
+document.addEventListener("keydown", e => 
   function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
   let correct = true;
@@ -345,8 +322,34 @@ document.addEventListener("keydown", e => {
 
   attempt++;
 }
+  {
+  const grid = document.getElementById("grid");
+  if (!grid || attempt >= 6) return;
+
+  const row = grid.children[attempt];
+  if (!row) return;
+
+  if (e.key === "Backspace") {
+    currentGuess = currentGuess.slice(0, -1);
+  } 
+  else if (e.key === "Enter") {
+    if (currentGuess.length === answer.length) {
+      submitGuess(currentGuess);
+      currentGuess = "";
+    }
+    return;
+  } 
+  else if (/^[a-zA-Z]$/.test(e.key) && currentGuess.length < answer.length) {
+    currentGuess += e.key.toUpperCase();
+  }
+
+  for (let i = 0; i < answer.length; i++) {
+    row.children[i].textContent = currentGuess[i] || "";
+  }
+ 
+}
 });
-``
+
 // =======================
 // START
 // =======================
