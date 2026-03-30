@@ -134,7 +134,8 @@ button {
 
 <h3 id="message"></h3>
 <div id="wordleChoices" style="margin:20px; font-size:1.5em;"></div>
-<div id="game"></div>
+<div id="connectionsGame"></div>
+<div id="wordleGame"></div>
   <button onclick="checkSelections()">Submit</button>
 <div id="nzslVideo" style="display:none; margin-top:20px;">
   <h3>NZSL</h3>
@@ -206,7 +207,7 @@ function toggleSelect(tile) {
 }
 
 function startConnections() {
-  const game = document.getElementById("game");
+  const game = document.getElementById("connectionsGame");
 
   const topics = Object.keys(NZSL_TOPICS)
     .sort(() => Math.random() - 0.5)
@@ -258,6 +259,40 @@ function checkSelections() {
       setTimeout(() => tile.classList.remove("wrong"), 600);
     });
   }
+}
+function startWordle() {
+  const game = document.getElementById("wordleGame");
+
+  // clear Connections view
+  document.getElementById("connectionsGame").innerHTML = "";
+
+  // pick a random word
+  answer = getRandomAnswer();
+  attempt = 0;
+  currentGuess = "";
+
+  // show choices (optional)
+  const choices = getWordleChoices(answer);
+  document.getElementById("wordleChoices").innerText = choices.join("   ");
+
+  // create grid
+  game.innerHTML = "<div id='grid'></div>";
+  const grid = document.getElementById("grid");
+
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+
+    for (let j = 0; j < answer.length; j++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      row.appendChild(tile);
+    }
+    grid.appendChild(row);
+  }
+
+  document.getElementById("message").innerText =
+    "Type letters and press Enter";
 }
 
 // =======================
