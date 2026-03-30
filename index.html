@@ -175,33 +175,22 @@ function checkSelections() {
 /* =====================================================
    WORDLE DATA (LARGER SET)
 ===================================================== */
-const WORDLE_WORDS = [
-  // Animals
-  "DOG","CAT","COW","PIG","FISH","BIRD","HORSE","SHEEP","GOAT",
-  "DUCK","CHICKEN","RABBIT","MOUSE","RAT","OWL","EAGLE",
+const WORDLE_WORDS = {
+  3: [
+    "DOG","CAT","COW","PIG","RAT","OWL","BAT","ANT",
+    "RUN","EAT","SIT","HOP","ARM","LEG","EYE","EAR"
+  ],
 
-  // People
-  "MUM","DAD","BOY","GIRL","BABY","FRIEND","TEACHER","DOCTOR","NURSE",
+  4: [
+    "FISH","BIRD","MILK","CAKE","READ","PLAY","WALK",
+    "JUMP","LOOK","HELP","HAND","FOOT","NOSE","BACK"
+  ],
 
-  // Actions
-  "RUN","WALK","JUMP","SIT","STAND","PLAY","READ","WRITE","LOOK",
-  "LISTEN","HELP","CARRY","OPEN","CLOSE","WAIT","STOP","START",
-
-  // Food
-  "BREAD","RICE","MILK","CHEESE","APPLE","PEAR","BANANA","ORANGE",
-  "MEAT","SOUP","CAKE","EGGS","PASTA","FISH",
-
-  // Feelings
-  "HAPPY","SAD","ANGRY","CALM","TIRED","SCARED","PROUD","WORRIED",
-  "EXCITED","BORED","SURPRISED","SAFE",
-
-  // Objects
-  "BOOK","PEN","BAG","CHAIR","TABLE","PHONE","BALL","TOY","BED",
-  "CUP","HAT","SHOE","COAT",
-
-  // Body
-  "HAND","ARM","LEG","FOOT","HEAD","EYES","EARS","NOSE","MOUTH"
-];
+  5: [
+    "BREAD","APPLE","HAPPY","ANGRY","TIRED","SMILE",
+    "WATER","TABLE","CHAIR","SHOES","COAST","PLANT"
+  ]
+};
 
 function getRandomAnswer() {
   const lengths = Object.keys(WORDLE_WORDS);
