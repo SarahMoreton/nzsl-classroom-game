@@ -61,17 +61,32 @@ button {
 <h1>NZSL Classroom Game</h1>
 
 <button onclick="startConnections()">Connections</button>
-<button onclick="startWordle()">Wordle</button>
+<button onclick="startWordleMenu()">Wordle</button>
 
-<h3 id="message"></h3>
-<div id="wordleChoices"></div>
+<!-- Wordle mode buttons -->
+<div id="wordleMenu" style="display:none;">
+  <button onclick="startWordle(3)">3‑letter Wordle</button>
+  <button onclick="startWordle(4)">4‑letter Wordle</button>
+  <button onclick="startWordle(5)">5‑letter Wordle</button>
+  <button onclick="startWordle(currentLength)">🔁 New Wordle</button>
+</div>
 
-<div id="connectionsGame"></div>
-<div id="wordleGame"></div>
+<button id="submitConnectionsBtn" onclick="checkSelections()" style="display:none;">
+  Submit Connections
+</button>
 
-<button onclick="checkSelections()">Submit Connections</button>
+<button onclick="startConnections()">🔁 New Connections</button>
 
 <script>
+  let currentLength = 5;
+  function startWordleMenu() {
+  document.getElementById("connectionsGame").innerHTML = "";
+  document.getElementById("submitConnectionsBtn").style.display = "none";
+  document.getElementById("wordleMenu").style.display = "block";
+  document.getElementById("message").textContent =
+    "Choose Wordle difficulty";
+}
+
 /* =====================================================
    GLOBAL WORDLE STATE
 ===================================================== */
@@ -115,7 +130,10 @@ Object.keys(NZSL_TOPICS).forEach(topic =>
 /* =====================================================
    CONNECTIONS GAME
 ===================================================== */
-function startConnections() {
+function startConnections() 
+document.getElementById("wordleMenu").style.display = "none";
+document.getElementById("submitConnectionsBtn").style.display = "inline-block";
+{
   document.getElementById("wordleGame").innerHTML = "";
   const game = document.getElementById("connectionsGame");
   game.innerHTML = "";
@@ -202,14 +220,15 @@ function getRandomAnswer() {
 /* =====================================================
    WORDLE GAME
 ===================================================== */
-function startWordle() {
+function startWordle(length) currentLength = length;
+document.getElementById("wordleMenu").style.display = "block";
+document.getElementById("submitConnectionsBtn").style.display = "none";
+{
   document.getElementById("connectionsGame").innerHTML = "";
   const game = document.getElementById("wordleGame");
   game.innerHTML = "";
 
-  answer = getRandomAnswer();
-  attempt = 0;
-  currentGuess = "";
+  answer = WORDLE_WORDS[length][Math.floor(Math.random() * WORDLE_WORDS[length].length)];
 
   document.getElementById("wordleChoices").textContent =
   "3 letters | 4 letters | 5 letters";
