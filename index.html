@@ -136,38 +136,33 @@ function showNZSLVideo(word) {
 // Words are grouped by length for low readers
 
 const WORDLE_WORDS = {
-  3: [
-    "DOG",
-    "CAT",
-    "RUN",
-    "EAT",
-    "SIT",
-    "HAT",
-    "SUN",
-    "DAY"
-  ],
-
+  3:  [
+  "DOG","CAT","SUN","DAY","RUN","EAT","SIT","HAT","BED","CAR",
+  "BUS","MAP","BOX","CUP","PEN","ARM","LEG","EYE","EAR","MUM",
+  "DAD","BOY","GIRL","MAN","RED","BIG","HOT","OLD","NEW","FUN",
+  "SKY","SEA","ICE","COW","PIG","HEN","FAN","KEY","TOY","BAG",
+  "BAT","BALL","JAM","PAN","POT","LOG","BUG","ANT","OWL","FOX",
+  "LIP","MAP","NET","ZIP","CAP","RUG","HILL","TOP"
+]
   4: [
-    "HELP",
-    "HOME",
-    "HAND",
-    "BOOK",
-    "PLAY",
-    "READ",
-    "WALK",
-    "LOOK"
-  ],
+  "HELP","HOME","HAND","BOOK","READ","PLAY","WALK","LOOK","OPEN","STOP",
+  "FOOD","RICE","MILK","BREAD","FISH","MEAT","WORK","TURN","MOVE","FAST",
+  "SLOW","SAFE","HARD","SOFT","LOUD","CALM","FULL","EMPT","WARM","COLD",
+  "BLUE","PINK","BLACK","WHITE","GOOD","KIND","MEAN","NICE","BEST","TALL",
+  "LONG","SHORT","HIGH","LOW","WAIT","COME","GOES","SING","DANCE","SMILE",
+  "CRY","HUG","PUSH","PULL","DROP","LIFT","CLEAN","DIRT","MUD","RAIN"
+]
 
   5: [
-    "HAPPY",
-    "TIRED",
-    "ANGRY",
-    "PROUD",
-    "SADLY",
-    "SMILE",
-    "LAUGH",
-    "FRIEND"
-  ]
+  "HAPPY","SADLY","TIRED","ANGRY","PROUD","AFRAID","CALM","SMILE","LAUGH",
+  "FRIEND","TEACH","LEARN","WRITE","READS","DRINK","EATS","PLAYS","WATCH",
+  "LISTEN","THINK","KNOWS","HELPS","SHARE","WAIT","STOPS","START","BRING",
+  "TAKES","SLEEP","WAKES","WANTS","NEEDS","LIKES","LOVES","HATES","GIVES",
+  "CARRY","HOLDS","BREAK","FIXES","MAKES","BUILT","COOKS","DRIVE","RIDES",
+  "WALKS","RUNS","JUMPS","CLAPS","POINT","LOOKS","TALKS"
+]
+checkWordLengths(WORDLE_WORDS);
+
 };
 const groups = [
   {cat:"Animals", words:["DOG","CAT","FISH","BIRD"]},
@@ -181,7 +176,31 @@ let allWords = groups.flatMap(g=>g.words);
 // ---------------- CONNECTIONS ----------------
 let selected = [];
 let mistakes = 0;
+const NZSL_TOPICS = {
+  Animals: [
+    "DOG","CAT","COW","PIG","HEN","FOX","OWL","FISH","BAT","ANT","BUG"
+  ],
 
+  Food: [
+    "EAT","FOOD","RICE","MILK","MEAT","FISH","APPLE","BREAD","CAKE","SOUP"
+  ],
+
+  Feelings: [
+    "HAPPY","SAD","ANGRY","TIRED","PROUD","AFRAID","CALM","SMILE","LAUGH"
+  ],
+
+  Actions: [
+    "RUN","WALK","JUMP","EAT","SIT","STAND","LOOK","LISTEN","WRITE","READ"
+  ],
+
+  People: [
+    "MUM","DAD","BOY","GIRL","MAN","FRIEND","TEACH"
+  ],
+
+  Places: [
+    "HOME","SCHOOL","PARK","SHOP","ROAD","BUS"
+  ]
+};
 
 function selectTile(el, word){
   if(el.classList.contains("selected")){
@@ -213,7 +232,7 @@ function submitGroup(){
     tile.classList.remove("selected");
   });
 }
-
+const WORD_TAGS = buildWordTags(NZSL_TOPICS);
   selected = [];
 }
 
@@ -340,7 +359,24 @@ function buildBank(){
     bank.appendChild(div);
   });
 }
+function checkWordLengths(wordBank) {
+  const problems = [];
 
+  Object.keys(wordBank).forEach(len => {
+    wordBank[len].forEach(word => {
+      if (word.length < 3 || word.length > 5) {
+        problems.push(word);
+      }
+    });
+  });
+
+  if (problems.length > 0) {
+    console.warn("⚠️ Words not 3–5 letters:", problems);
+  } else {
+    console.log("✅ All Wordle words are 3–5 letters");
+  }
+}
+``
 function guess(word){
   let row = document.getElementById("grid").children[attempt];
 
