@@ -139,7 +139,10 @@ button {
   <h3>NZSL</h3>
   <video id="nzslPlayer" controls width="320"></video>
 </div>
-  
+ function toggleSelect(tile) {
+  tile.classList.toggle("selected");
+}
+ 
 <script>
 // ✅ GLOBAL WORDLE STATE (must be outside any function)
 let answer = "";
