@@ -225,7 +225,7 @@ function getRandomAnswer() {
 /* =====================================================
    WORDLE GAME
 ===================================================== */
-function startWordle(length, dailyAnswer
+function startWordle(length, dailyAnswer) {
   currentLength = length;
 
   document.getElementById("wordleMenu").style.display = "block";
@@ -235,27 +235,26 @@ function startWordle(length, dailyAnswer
   const game = document.getElementById("wordleGame");
   game.innerHTML = "";
 
+  // ✅ DAILY answer (not user-selected)
   answer = dailyAnswer;
-  ];
   attempt = 0;
   currentGuess = "";
 
-const previewCount = 6;
-const pool = WORDLE_WORDS[length].filter(w => w !== answer);
+  // ✅ Daily random hint list (does NOT include answer)
+  const previewCount = 6;
+  const pool = WORDLE_WORDS[length].filter(w => w !== answer);
 
-// Shuffle deterministically from the same seed
-const seed = getTodaySeed();
-let hash = 0;
-for (let i = 0; i < seed.length; i++) {
-  hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-}
+  const seed = getTodaySeed();
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-const shuffled = [...pool].sort(() => 0.5 - Math.sin(hash++));
+  const shuffled = [...pool].sort(() => 0.5 - Math.sin(hash++));
+  document.getElementById("wordleChoices").textContent =
+    `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
 
-document.getElementById("wordleChoices").textContent =
-  `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
-
-
+  // ✅ Build Wordle grid
   const grid = document.createElement("div");
   grid.id = "grid";
 
@@ -268,14 +267,14 @@ document.getElementById("wordleChoices").textContent =
       tile.className = "tile";
       row.appendChild(tile);
     }
-
     grid.appendChild(row);
   }
 
   game.appendChild(grid);
   document.getElementById("message").textContent =
-    "Type letters and press Enter";
+    "Wordle: type letters and press Enter";
 }
+
  document.addEventListener("keydown", e => {
   // ✅ only respond if a Wordle grid exists
   const grid = document.getElementById("grid");
