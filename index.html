@@ -118,9 +118,13 @@ button {
 </div>
   
 <script>
- function showNZSLVideo(word)let answer = "";
+// ✅ GLOBAL WORDLE STATE (must be outside any function)
+let answer = "";
 let attempt = 0;
-let currentGuess = ""; {
+let currentGuess = "";
+
+// ✅ NZSL VIDEO REVEAL
+function showNZSLVideo(word) {
   const container = document.getElementById("nzslVideo");
   const video = document.getElementById("nzslPlayer");
 
