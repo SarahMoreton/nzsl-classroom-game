@@ -217,7 +217,7 @@ function startWordle(length) {
   currentGuess = "";
 
   document.getElementById("wordleChoices").textContent =
-    "3 letters | 4 letters | 5 letters";
+  `${length}-letter words: ${WORDLE_WORDS[length].join(", ")}`;
 
   const grid = document.createElement("div");
   grid.id = "grid";
@@ -293,6 +293,34 @@ function submitGuess(word) {
 }
 /* START */
 startConnections();
+  function checkSelections() {
+  const selected = [...document.querySelectorAll(".tile.selected")];
+
+  if (selected.length !== 4) {
+    document.getElementById("message").textContent =
+      "Select exactly 4 tiles";
+    return;
+  }
+
+  const topics = selected.map(t => WORD_TO_TOPIC[t.textContent]);
+  const correct = topics.every(t => t === topics[0]);
+
+  if (correct) {
+    selected.forEach(t => {
+      t.classList.remove("selected");
+      t.classList.add("correct");
+      t.onclick = null;
+    });
+    document.getElementById("message").textContent = "✅ Correct group!";
+  } else {
+    selected.forEach(t => {
+      t.classList.add("wrong");
+      setTimeout(() => t.classList.remove("wrong"), 600);
+      t.classList.remove("selected");
+    });
+    document.getElementById("message").textContent = "❌ Try again";
+  }
+}
 </script>
 
 </body>
