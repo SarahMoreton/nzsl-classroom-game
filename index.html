@@ -76,9 +76,14 @@ button {
 <button onclick="startConnections()">🔁 New Connections</button>
 <h3 id="message"></h3>
 <div id="wordleChoices"></div>
-  <div id="connectionsGame"></div><button id="submitConnectionsBtn" onclick="checkSelections()" style="display:none;">
-  Submit Connections
-</button>
+ <div id="connectionsGame"></div>
+<div id="connectionsControls">
+  <button id="submitConnectionsBtn"
+          onclick="checkSelections()"
+          style="display:none;">
+    Submit Connections
+  </button>
+</div>
 <div id="wordleGame"></div>
 <script>
   let currentLength = 5;
