@@ -254,20 +254,15 @@ document.addEventListener("keydown", e => {
   }
 });
 
-  function getWordleChoices(answer, count = 5) {
+ function getWordleChoices(answer, count = 5) {
   const length = answer.length;
   const pool = WORDLE_WORDS[length].filter(w => w !== answer);
 
-  // Shuffle pool completely
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
-
-  // Take random distractors (no similarity filtering)
   const choices = shuffled.slice(0, count - 1);
 
-  // Add the correct answer
   choices.push(answer);
 
-  // Final shuffle so answer is not predictable
   return choices.sort(() => Math.random() - 0.5);
 }
   const ranked = pool
