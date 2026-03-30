@@ -130,10 +130,11 @@ Object.keys(NZSL_TOPICS).forEach(topic =>
 /* =====================================================
    CONNECTIONS GAME
 ===================================================== */
-function startConnections() 
-document.getElementById("wordleMenu").style.display = "none";
-document.getElementById("submitConnectionsBtn").style.display = "inline-block";
-{
+function startConnections() {
+  // UI controls
+  document.getElementById("wordleMenu").style.display = "none";
+  document.getElementById("submitConnectionsBtn").style.display = "inline-block";
+
   document.getElementById("wordleGame").innerHTML = "";
   const game = document.getElementById("connectionsGame");
   game.innerHTML = "";
@@ -143,13 +144,12 @@ document.getElementById("submitConnectionsBtn").style.display = "inline-block";
     .slice(0, 4);
 
   const words = topics
-  .flatMap(t =>
-    NZSL_TOPICS[t]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 4)
-  )
-  .sort(() => Math.random() - 0.5);
-
+    .flatMap(t =>
+      NZSL_TOPICS[t]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4)
+    )
+    .sort(() => Math.random() - 0.5);
 
   const grid = document.createElement("div");
   grid.className = "grid";
@@ -165,29 +165,6 @@ document.getElementById("submitConnectionsBtn").style.display = "inline-block";
   game.appendChild(grid);
   document.getElementById("message").textContent =
     "Select 4 words that belong together";
-}
-
-function checkSelections() {
-  const selected = [...document.querySelectorAll(".tile.selected")];
-
-  if (selected.length !== 4) {
-    document.getElementById("message").textContent =
-      "Select exactly 4 tiles";
-    return;
-  }
-
-  const topics = selected.map(t => WORD_TO_TOPIC[t.textContent]);
-  const ok = topics.every(t => t === topics[0]);
-
-  selected.forEach(t => t.classList.remove("selected"));
-
-  if (ok) {
-    selected.forEach(t => t.classList.add("correct"));
-    document.getElementById("message").textContent = "✅ Correct";
-  } else {
-    selected.forEach(t => t.classList.add("wrong"));
-    document.getElementById("message").textContent = "❌ Try again";
-  }
 }
 
 /* =====================================================
