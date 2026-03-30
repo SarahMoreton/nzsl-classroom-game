@@ -318,6 +318,33 @@ document.addEventListener("keydown", e => {
   for (let i = 0; i < answer.length; i++) {
     row.children[i].textContent = currentGuess[i] || "";
   }
+  function submitGuess(word) {
+  const row = document.getElementById("grid").children[attempt];
+  let correct = true;
+
+  for (let i = 0; i < word.length; i++) {
+    const tile = row.children[i];
+    tile.textContent = word[i];
+
+    if (word[i] === answer[i]) {
+      tile.classList.add("correct");
+    } 
+    else if (answer.includes(word[i])) {
+      tile.classList.add("present");
+      correct = false;
+    } 
+    else {
+      tile.classList.add("wrong");
+      correct = false;
+    }
+  }
+
+  if (correct) {
+    document.getElementById("message").innerText = "✅ Correct!";
+  }
+
+  attempt++;
+}
 });
 ``
 // =======================
