@@ -227,18 +227,11 @@ function getRandomAnswer() {
    WORDLE GAME
 ===================================================== */
 function startWordle(length, dailyAnswer) {
-  currentLength = length;
+  if (!length || !dailyAnswer) {
+    console.warn("Wordle blocked: missing daily configuration");
+    return;
+  }
 
-  document.getElementById("wordleMenu").style.display = "block";
-  document.getElementById("submitConnectionsBtn").style.display = "none";
-
-  document.getElementById("connectionsGame").innerHTML = "";
-  const game = document.getElementById("wordleGame");
-  game.innerHTML = "";
-if (!dailyAnswer) {
-  console.error("Daily answer missing – Wordle not started");
-  return;
-}
   // ✅ DAILY answer (not user-selected)
   answer = dailyAnswer;
   attempt = 0;
