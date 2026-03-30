@@ -65,9 +65,7 @@ button {
 
 <!-- Wordle mode buttons -->
 <div id="wordleMenu" style="display:none;">
-  <button onclick="startWordle(3)">3‑letter Wordle</button>
-  <button onclick="startWordle(4)">4‑letter Wordle</button>
-  <button onclick="startWordle(5)">5‑letter Wordle</button>
+  
   <button onclick="startWordle(currentLength)">🔁 New Wordle</button>
 </div>
 
@@ -86,17 +84,34 @@ button {
 </div>
 <div id="wordleGame"></div>
 <script>
+  function getTodaySeed() {
+  const today = new Date();
+  return today.getFullYear() + "-" +
+         (today.getMonth() + 1) + "-" +
+         today.getDate();
+}
+  function getDailyWordle() {
+  const seed = getTodaySeed();
+
+  // Simple deterministic hash
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const lengths = Object.keys(WORDLE_WORDS);
+  const length = lengths[Math.abs(hash) % lengths.length];
+
+  const words = WORDLE_WORDS[length];
+  const answer = words[Math.abs(hash) % words.length];
+
+  return { length: Number(length), answer };
+}
+
   let currentLength = 5;
 function startWordleMenu() {
-  document.getElementById("submitConnectionsBtn").style.display = "none";
-  document.getElementById("wordleMenu").style.display = "block";
-
-  // ✅ Minimal Wordle hint (NO LISTS)
-  document.getElementById("wordleChoices").textContent =
-    "Choose a Wordle length (3, 4, or 5 letters)";
-
-  document.getElementById("message").textContent =
-    "Wordle: type letters and press Enter";
+  const daily = getDailyWordle();
+  startWordle(daily.length, daily.answer);
 }
 /* =====================================================
    GLOBAL WORDLE STATE
@@ -208,7 +223,7 @@ function getRandomAnswer() {
 /* =====================================================
    WORDLE GAME
 ===================================================== */
-function startWordle(length) {
+function startWordle(length, dailyAnswer
   currentLength = length;
 
   document.getElementById("wordleMenu").style.display = "block";
@@ -218,14 +233,22 @@ function startWordle(length) {
   const game = document.getElementById("wordleGame");
   game.innerHTML = "";
 
-  answer = WORDLE_WORDS[length][
-    Math.floor(Math.random() * WORDLE_WORDS[length].length)
+  answer = dailyAnswer;
   ];
   attempt = 0;
   currentGuess = "";
 
 const previewCount = 6;
-const shuffled = [...WORDLE_WORDS[length]].sort(() => Math.random() - 0.5);
+const pool = WORDLE_WORDS[length].filter(w => w !== answer);
+
+// Shuffle deterministically from the same seed
+const seed = getTodaySeed();
+let hash = 0;
+for (let i = 0; i < seed.length; i++) {
+  hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+}
+
+const shuffled = [...pool].sort(() => 0.5 - Math.sin(hash++));
 
 document.getElementById("wordleChoices").textContent =
   `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
