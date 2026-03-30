@@ -385,17 +385,19 @@ function startConnections() {
   const allWords = topics
     .flatMap(t => NZSL_TOPICS[t])
     .sort(() => Math.random() - 0.5)
-    .slice(0, 16); // pick 16 from your full lists
+    .slice(0, 16);
 
   let html = "<div class='grid'>";
+
   allWords.forEach(word => {
     html += `<div class="tile" onclick="toggleSelect(this)">${word}</div>`;
   });
-  html += "</div>";
 
+  html += "</div>";
   game.innerHTML = html;
   document.getElementById("message").innerText = "Find 4 groups of 4";
 }
+
 
 // =====================
 // START GAME
