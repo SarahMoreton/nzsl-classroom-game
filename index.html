@@ -87,8 +87,7 @@ button {
 <div id="wordleGame"></div>
 <script>
   let currentLength = 5;
- function startWordleMenu() {
-  document.getElementById("connectionsGame").innerHTML = "";
+function startWordleMenu() {
   document.getElementById("submitConnectionsBtn").style.display = "none";
   document.getElementById("wordleMenu").style.display = "block";
 
@@ -100,8 +99,6 @@ button {
   document.getElementById("message").textContent =
     "Choose Wordle difficulty";
 }
-
-
 /* =====================================================
    GLOBAL WORDLE STATE
 ===================================================== */
@@ -228,8 +225,12 @@ function startWordle(length) {
   attempt = 0;
   currentGuess = "";
 
-  document.getElementById("wordleChoices").textContent =
-  `${length}-letter words: ${WORDLE_WORDS[length].join(", ")}`;
+ const previewCount = 6; // how many words to show
+document.getElementById("wordleChoices").textContent =
+  `${length}-letter words (examples): ` +
+  WORDLE_WORDS[length].slice(0, previewCount).join(", ") +
+  " …";
+
 
   const grid = document.createElement("div");
   grid.id = "grid";
@@ -281,7 +282,9 @@ function startWordle(length) {
 });
 function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
-  let win = true;
+
+  // ✅ FIRST: check for a full correct guess
+  const isCorrect = word === answer;
 
   for (let i = 0; i < word.length; i++) {
     if (word[i] === answer[i]) {
@@ -289,15 +292,13 @@ function submitGuess(word) {
     }
     else if (answer.includes(word[i])) {
       row.children[i].classList.add("present");
-      win = false;
     }
     else {
       row.children[i].classList.add("wrong");
-      win = false;
     }
   }
 
-  if (win) {
+  if (isCorrect) {
     document.getElementById("message").textContent = "🎉 Solved!";
     attempt = 6; // lock Wordle
   } else {
