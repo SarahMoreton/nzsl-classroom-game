@@ -204,7 +204,10 @@ const WORDLE_WORDS = [
 ];
 
 function getRandomAnswer() {
-  return WORDLE_WORDS[Math.floor(Math.random()*WORDLE_WORDS.length)];
+  const lengths = Object.keys(WORDLE_WORDS);
+  const len = lengths[Math.floor(Math.random() * lengths.length)];
+  const words = WORDLE_WORDS[len];
+  return words[Math.floor(Math.random() * words.length)];
 }
 
 /* =====================================================
