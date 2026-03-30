@@ -251,6 +251,10 @@ document.addEventListener("keydown", e => {
 function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
   let win=true;
+  if (win) {
+  attempt = 6; // stop further guessing
+}
+
 
   for (let i=0;i<word.length;i++) {
     if (word[i]===answer[i]) row.children[i].classList.add("correct");
