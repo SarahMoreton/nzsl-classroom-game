@@ -364,11 +364,16 @@ function startConnections() {
   let html = `<div class="grid">`;
   allWords.forEach(word => {
     html += `
-      <div class="tile">
-        ${word}
-        <img class="hover-img" src="images/connections/${word}.png" alt="${word}">
-      </div>
-    `;
+  <div class="tile">
+    <a 
+      href="https://www.nzsl.nz/" 
+      target="_blank"
+      style="text-decoration:none; color:inherit;"
+    >
+      ${word}
+    </a>
+  </div>
+`;
   });
   html += `</div>`;
 
