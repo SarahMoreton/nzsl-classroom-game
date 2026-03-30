@@ -241,20 +241,12 @@ function startWordle(length, dailyAnswer) {
   attempt = 0;
   currentGuess = "";
 
-  // Daily hint list (does not include the answer)
- const previewCount = 6;
+ // Daily hint list (includes the answer)
+const previewCount = 6;
 const shuffled = [...WORDLE_WORDS[length]].sort(() => Math.random() - 0.5);
 
-
-  const seed = getTodaySeed();
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const shuffled = [...pool].sort(() => 0.5 - Math.sin(hash++));
-  document.getElementById("wordleChoices").textContent =
-    `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
+document.getElementById("wordleChoices").textContent =
+  `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
 
   // Build grid
   const grid = document.createElement("div");
