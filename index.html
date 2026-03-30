@@ -242,8 +242,9 @@ function startWordle(length, dailyAnswer) {
   currentGuess = "";
 
   // Daily hint list (does not include the answer)
-  const previewCount = 6;
-  const pool = WORDLE_WORDS[length].filter(w => w !== answer);
+ const previewCount = 6;
+const shuffled = [...WORDLE_WORDS[length]].sort(() => Math.random() - 0.5);
+
 
   const seed = getTodaySeed();
   let hash = 0;
