@@ -187,7 +187,31 @@ function startWordle() {
 
   document.getElementById("nzslVideo").style.display = "none";
 }
+function submitGuess(word) {
+  const row = document.getElementById("grid").children[attempt];
+  let correct = true;
 
+  for (let i = 0; i < word.length; i++) {
+    const tile = row.children[i];
+    tile.textContent = word[i];
+
+    if (word[i] === answer[i]) {
+      tile.classList.add("correct");
+    } else if (answer.includes(word[i])) {
+      tile.classList.add("present");
+      correct = false;
+    } else {
+      tile.classList.add("wrong");
+      correct = false;
+    }
+  }
+
+  if (correct) {
+    showNZSLVideo(answer);
+  }
+
+  attempt++;
+}
 // =====================
 // CONNECTIONS DATA
 // =====================
