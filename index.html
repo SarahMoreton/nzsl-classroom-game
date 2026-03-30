@@ -65,7 +65,7 @@ button {
 
 <!-- Wordle mode buttons -->
 <div id="wordleMenu" style="display:none;">
-  
+  <button id="newConnectionsBtn"
  <button onclick="startWordleMenu()">🔁 Teacher Reset</button> 
 </div>
 
@@ -131,7 +131,7 @@ button {
   let currentLength = 5;
 function startWordleMenu() {
   const daily = getDailyWordle();
-  startWordle(daily.length, daily.answer);
+  startWordle(daily.length, daily.answer);document.getElementById("newConnectionsBtn").style.display = "none";
 }
 /* =====================================================
    GLOBAL WORDLE STATE
@@ -176,7 +176,7 @@ Object.keys(NZSL_TOPICS).forEach(topic =>
 /* =====================================================
    CONNECTIONS GAME
 ===================================================== */
-function startConnections() {
+function startConnections() document.getElementById("newConnectionsBtn").style.display = "inline-block";{
   // UI controls
   document.getElementById("wordleMenu").style.display = "none";
   document.getElementById("submitConnectionsBtn").style.display = "inline-block";
@@ -234,7 +234,10 @@ function startWordle(length, dailyAnswer) {
   document.getElementById("connectionsGame").innerHTML = "";
   const game = document.getElementById("wordleGame");
   game.innerHTML = "";
-
+if (!dailyAnswer) {
+  console.error("Daily answer missing – Wordle not started");
+  return;
+}
   // ✅ DAILY answer (not user-selected)
   answer = dailyAnswer;
   attempt = 0;
