@@ -66,6 +66,7 @@ button {
 <!-- Wordle mode buttons -->
 <div id="wordleMenu" style="display:none;">
   <button onclick="startWordleMenu()">🔁 Teacher Reset</button>
+</div>
 
 
 
@@ -228,12 +229,18 @@ function startWordle(length, dailyAnswer) {
     return;
   }
 
-  // ✅ DAILY answer (not user-selected)
+  document.getElementById("wordleMenu").style.display = "block";
+  document.getElementById("submitConnectionsBtn").style.display = "none";
+  document.getElementById("connectionsGame").innerHTML = "";
+
+  const game = document.getElementById("wordleGame");
+  game.innerHTML = "";
+
   answer = dailyAnswer;
   attempt = 0;
   currentGuess = "";
 
-  // ✅ Daily random hint list (does NOT include answer)
+  // Daily hint list (does not include the answer)
   const previewCount = 6;
   const pool = WORDLE_WORDS[length].filter(w => w !== answer);
 
@@ -247,7 +254,7 @@ function startWordle(length, dailyAnswer) {
   document.getElementById("wordleChoices").textContent =
     `Possible answers: ${shuffled.slice(0, previewCount).join(", ")}`;
 
-  // ✅ Build Wordle grid
+  // Build grid
   const grid = document.createElement("div");
   grid.id = "grid";
 
@@ -353,8 +360,8 @@ function submitGuess(word) {
     document.getElementById("message").textContent = "❌ Try again";
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-  startConnections
+ document.addEventListener("DOMContentLoaded", () => {
+  startConnections();
 });
 </script>
 
