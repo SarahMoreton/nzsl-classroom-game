@@ -143,7 +143,7 @@ const WORDLE_WORDS = {
   "SKY","SEA","ICE","COW","PIG","HEN","FAN","KEY","TOY","BAG",
   "BAT","BALL","JAM","PAN","POT","LOG","BUG","ANT","OWL","FOX",
   "LIP","MAP","NET","ZIP","CAP","RUG","HILL","TOP"
-]
+],
   4: [
   "HELP","HOME","HAND","BOOK","READ","PLAY","WALK","LOOK","OPEN","STOP",
   "FOOD","RICE","MILK","BREAD","FISH","MEAT","WORK","TURN","MOVE","FAST",
@@ -151,7 +151,7 @@ const WORDLE_WORDS = {
   "BLUE","PINK","BLACK","WHITE","GOOD","KIND","MEAN","NICE","BEST","TALL",
   "LONG","SHORT","HIGH","LOW","WAIT","COME","GOES","SING","DANCE","SMILE",
   "CRY","HUG","PUSH","PULL","DROP","LIFT","CLEAN","DIRT","MUD","RAIN"
-]
+],
 
   5: [
   "HAPPY","SADLY","TIRED","ANGRY","PROUD","AFRAID","CALM","SMILE","LAUGH",
@@ -160,21 +160,61 @@ const WORDLE_WORDS = {
   "TAKES","SLEEP","WAKES","WANTS","NEEDS","LIKES","LOVES","HATES","GIVES",
   "CARRY","HOLDS","BREAK","FIXES","MAKES","BUILT","COOKS","DRIVE","RIDES",
   "WALKS","RUNS","JUMPS","CLAPS","POINT","LOOKS","TALKS"
-]
+],
 checkWordLengths(WORDLE_WORDS);
 
 };
-const groups = [
-  {cat:"Animals", words:["DOG","CAT","FISH","BIRD"]},
-  {cat:"Food", words:["APPLE","BREAD","MILK","CARROT"]},
-  {cat:"Actions", words:["RUN","EAT","JUMP","SLEEP"]},
-  {cat:"Emotions", words:["HAPPY","SAD","ANGRY","TIRED"]}
-];
+const NZSL_TOPICS = {
+  Animals: [
+    "DOG","CAT","COW","PIG","HEN","FISH","FOX","OWL","BAT","ANT"
+  ],
+  Food: [
+    "EAT","FOOD","RICE","MILK","MEAT","FISH","BREAD","CAKE","SOUP"
+  ],
+  Feelings: [
+    "HAPPY","SAD","ANGRY","TIRED","PROUD","CALM","SMILE"
+  ],
+  Actions: [
+    "RUN","WALK","JUMP","EAT","SIT","LOOK","READ","WRITE"
+  ]
+};
+function checkWordLengths(wordBank) {
+  const problems = [];
 
-let allWords = groups.flatMap(g=>g.words);
+  Object.values(wordBank).forEach(list => {
+    list.forEach(word => {
+      if (word.length < 3 || word.length > 5) {
+        problems.push(word);
+      }
+    });
+  });
+
+  if (problems.length) {
+    console.warn("⚠️ Invalid Wordle words:", problems);
+  } else {
+    console.log("✅ All Wordle words are 3–5 letters");
+  }
+}
+
+// ✅ Call it once
+checkWordLengths(WORDLE_WORDS);
+;
 
 // ---------------- CONNECTIONS ----------------
-let selected = [];
+function pickRandom(arr, n) {
+  return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+}
+
+function generateConnectionsPuzzle() {
+  const topics = Object.keys(NZSL_TOPICS);
+  const chosen = pickRandom(topics, 4);
+
+  return chosen.map(topic => ({
+    cat: topic,
+    words: pickRandom(NZSL_TOPICS[topic], 4)
+  }));
+}
+  let selected = [];
 let mistakes = 0;
 const NZSL_TOPICS = {
   Animals: [
@@ -451,6 +491,9 @@ document.querySelectorAll(".tile").forEach(tile => {
   tile.style.background = "white";
 });
 function startConnections(){
+  groups = generateConnectionsPuzzle();
+  allWords = [...new Set(groups.flatMap(g => g.words))];
+
   document.getElementById("message").innerText = "Find 4 groups of 4";
   document.getElementById("wordleChoices").innerText = "";
   const game = document.getElementById("game");
