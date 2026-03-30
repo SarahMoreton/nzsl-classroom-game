@@ -357,7 +357,8 @@ function startConnections() {
       .slice(0, 4)
   }));
 
-  const allWords = groups.flatMap(g => g.words)
+  const allWords = groups
+    .flatMap(g => g.words)
     .sort(() => Math.random() - 0.5);
 
   let html = `<div class="grid">`;
@@ -365,7 +366,7 @@ function startConnections() {
     html += `
       <div class="tile">
         ${word}
-        images/connections/${word}.png
+        <img class="hover-img" src="images/connections/${word}.png" alt="${word}">
       </div>
     `;
   });
