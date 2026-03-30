@@ -362,7 +362,7 @@ function startConnections() {
     .flatMap(g => g.words)
     .sort(() => Math.random() - 0.5);
 
-  let html = `<div class="grid">`;
+  let html = "<div class='grid'>";
 
   allWords.forEach(word => {
     html += `
@@ -371,10 +371,19 @@ function startConnections() {
           href="https://www.google.com/search?q=site:nzsl.nz+${encodeURIComponent(word)}"
           target="_blank"
           style="text-decoration:none; color:inherit;"
-       cument.getElementById("message").innerText = "Find 4 groups of 4";
+        >
+          ${word}
+        </a>
+      </div>
+    `;
+  });
+
+  html += "</div>";
+
+  game.innerHTML = html;
+  document.getElementById("message").innerText = "Find 4 groups of 4";
   document.getElementById("wordleChoices").innerText = "";
 }
-
 // =====================
 // START GAME
 // =====================
