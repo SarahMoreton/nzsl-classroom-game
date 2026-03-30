@@ -265,16 +265,7 @@ document.addEventListener("keydown", e => {
 
   return choices.sort(() => Math.random() - 0.5);
 }
-  const ranked = pool
-    .map(w => ({ w, s: score(w) }))
-    .filter(o => o.s > 0)
-    .sort((a,b) => b.s - a.s)
-    .slice(0, count - 1)
-    .map(o => o.w);
-
-  ranked.push(answer);
-  return ranked.sort(() => Math.random() - 0.5);
-}
+ 
 
 // =====================
 // CONNECTIONS DATA
