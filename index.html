@@ -210,23 +210,16 @@ function submitGuess(word) {
   if (correct) {
     showNZSLVideo(answer);
   }
-else if (e.key === "Enter") {
-  e.preventDefault();   // ✅ add this
-  if (currentGuess.length === answer.length) {
-    submitGuess(currentGuess);
-    currentGuess = "";
-  }
-  return;
-}
+
   attempt++;
 }
+
 document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid || attempt >= 6) return;   // ✅ already good
 
   const row = grid.children[attempt];
   if (!row) return;
-  …
 });
 
   function getWordleChoices(answer, count = 5) {
