@@ -92,8 +92,10 @@ button {
   document.getElementById("submitConnectionsBtn").style.display = "none";
   document.getElementById("wordleMenu").style.display = "block";
 
-  document.getElementById("wordleChoices").textContent =
-    "3‑letter words: " + WORDLE_WORDS[3].join(", ");
+  document.getElementById("wordleChoices").innerHTML =
+  "<strong>3‑letter:</strong> " + WORDLE_WORDS[3].join(", ") + "<br><br>" +
+  "<strong>4‑letter:</strong> " + WORDLE_WORDS[4].join(", ") + "<br><br>" +
+  "<strong>5‑letter:</strong> " + WORDLE_WORDS[5].join(", ");
 
   document.getElementById("message").textContent =
     "Choose Wordle difficulty";
