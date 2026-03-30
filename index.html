@@ -210,7 +210,14 @@ function submitGuess(word) {
   if (correct) {
     showNZSLVideo(answer);
   }
-
+else if (e.key === "Enter") {
+  e.preventDefault();   // ✅ add this
+  if (currentGuess.length === answer.length) {
+    submitGuess(currentGuess);
+    currentGuess = "";
+  }
+  return;
+}
   attempt++;
 }
 document.addEventListener("keydown", e => {
