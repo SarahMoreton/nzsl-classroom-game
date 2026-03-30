@@ -118,403 +118,77 @@ button {
 </div>
   
 <script>
-function blurAllButtons() {
-  document.querySelectorAll("button").forEach(btn => btn.blur());
-}
-function showNZSLVideo(word) {
-  const container = document.getElementById("nzslVideo");
-  const video = document.getElementById("nzslPlayer");
-
-  video.src = `videos/nzsl/${word}.mp4`;
-  container.style.display = "block";
-  video.load();
-}
-
-// ---------------- DATA ----------------
-  // ---------------- WORDLE WORD BANK ----------------
-// Used ONLY for Wordle (not Connections)
-// Words are grouped by length for low readers
-
+// =====================
+// WORDLE WORD BANK
+// =====================
 const WORDLE_WORDS = {
-  3: [
-    "DOG","CAT","COW","PIG","HEN","BAT","OWL","FOX","ANT","BUG",
-    "SUN","SKY","SEA","DAY","ICE","HOT","WET","DRY","FUN","RED",
-    "BIG","OLD","NEW","TOP","LOW","HAT","BED","CUP","PEN","BOX",
-    "BAG","MAP","CAR","BUS","VAN","KEY","TOY","PAN","POT","LOG",
-    "ARM","LEG","EYE","EAR","LIP","MUM","DAD","BOY","GIRL","MAN",
-    "RUN","SIT","EAT","JAM","ZIP","CAP","RUG","NET","FAN","BEE"
-  ],
-
-  4: [
-    "HOME","HAND","HELP","BOOK","READ","PLAY","WALK","LOOK","OPEN","STOP",
-    "TURN","MOVE","WAIT","COME","GOES","WORK","JOIN","SEND","MAKE","TAKE",
-    "FOOD","RICE","MILK","FISH","MEAT","BREAD","SOUP","CAKE","EGGS","FRUIT",
-    "FAST","SLOW","HARD","SOFT","LOUD","CALM","SAFE","FULL","WARM","COLD",
-    "GOOD","KIND","NICE","MEAN","BEST","LONG","TALL","HIGH","LOW","LEFT",
-    "PUSH","PULL","DROP","LIFT","HOLD","GIVE","KEEP","LOSE","FIND","SHOW"
-  ],
-
-  5: [
-    "HAPPY","SADLY","TIRED","ANGRY","PROUD","CALM","SMILE","LAUGH","BRAVE",
-    "FRIEND","TEACH","LEARN","WRITE","READS","DRINK","EATS","PLAYS","WATCH",
-    "THINK","HELPS","SHARE","SLEEP","WAKES","START","STOPS","BRING","TAKES",
-    "GIVES","HOLDS","CARRY","BREAK","FIXES","MAKES","COOKS","DRIVE","RIDES",
-    "WALKS","RUNS","JUMPS","CLAPS","POINT","LOOKS","TALKS"
-  ]
+  3: ["DOG","CAT","SUN","RUN","EAT","SIT","HAT","BED","CAR","BUS"],
+  4: ["HOME","HAND","BOOK","READ","PLAY","WALK","LOOK","STOP"],
+  5: ["HAPPY","TIRED","ANGRY","PROUD","SMILE","LAUGH"]
 };
 
-function checkWordLengths(bank) {
-  const bad = [];
-  Object.values(bank).forEach(list =>
-    list.forEach(w => {
-      if (w.length < 3 || w.length > 5) bad.push(w);
-    })
-  );
-  if (bad.length) {
-    console.warn("⚠️ Invalid Wordle words:", bad);
-  } else {
-    console.log("✅ All Wordle words are 3–5 letters");
-  }
+// =====================
+// RANDOM WORDLE PICK
+// =====================
+function getRandomAnswer() {
+  const lengths = Object.keys(WORDLE_WORDS);
+  const len = lengths[Math.floor(Math.random() * lengths.length)];
+  const words = WORDLE_WORDS[len];
+  return words[Math.floor(Math.random() * words.length)];
 }
 
-// Call it once
-checkWordLengths(WORDLE_WORDS);
-
-// ---------------- CONNECTIONS ----------------
-function pickRandom(arr, n) {
-  return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
-}
-
-function generateConnectionsPuzzle() {
-  const topics = Object.keys(NZSL_TOPICS);
-  const chosen = pickRandom(topics, 4);
-
-  return chosen.map(topic => ({
-    cat: topic,
-    words: pickRandom(NZSL_TOPICS[topic], 4)
-  }));
-}
-  let selected = [];
-let mistakes = 0;
-const NZSL_TOPICS = {
-  Animals: [
-    "DOG","CAT","COW","PIG","HEN","FOX","OWL","FISH","BAT","ANT","BUG"
-  ],
-
-  Food: [
-    "EAT","FOOD","RICE","MILK","MEAT","FISH","APPLE","BREAD","CAKE","SOUP"
-  ],
-
-  Feelings: [
-    "HAPPY","SAD","ANGRY","TIRED","PROUD","AFRAID","CALM","SMILE","LAUGH"
-  ],
-
-  Actions: [
-    "RUN","WALK","JUMP","EAT","SIT","STAND","LOOK","LISTEN","WRITE","READ"
-  ],
-
-  People: [
-    "MUM","DAD","BOY","GIRL","MAN","FRIEND","TEACHER",
-  ],
-
-  Places: [
-    "HOME","SCHOOL","PARK","SHOP","ROAD","BUS"
-  ]
-};
-
-function selectTile(el, word){
-  if(el.classList.contains("selected")){
-    el.classList.remove("selected");
-    selected = selected.filter(w=>w!==word);
-  } else if(selected.length < 4){
-    el.classList.add("selected");
-    selected.push(word);
-  }
-}
-
-function submitGroup(){
-  if(selected.length !== 4) return;
-
-  let correctGroup = groups.find(g =>
-    selected.every(w=>g.words.includes(w))
-  );
-
-  if(correctGroup){
-    document.getElementById("message").innerText = "Correct: " + correctGroup.cat;
-    markCorrect(correctGroup.words);
-  } else {
-  mistakes++;
-  document.getElementById("message").innerText =
-    mistakes === 3 ? "Careful! Last chance" : "Try again";
-
-  // ✅ CLEAR SELECTION ON WRONG GROUP
-  document.querySelectorAll(".tile.selected").forEach(tile => {
-    tile.classList.remove("selected");
-  });
-}
-const WORD_TAGS = buildWordTags(NZSL_TOPICS);
-  selected = [];
-}
-
-function markCorrect(words){
-  document.querySelectorAll(".tile").forEach(tile=>{
-    let text = tile.innerText.trim();
-    if(words.includes(text)){
-      tile.style.background = "#6aaa64";
-    }
-  });
-}
-
-// ---------------- WORDLE ----------------
-  // -------- WORDLE: DAILY WORD + 5 CHOICES --------
-
-// Pick a repeatable number from today’s date
-function getDayIndex() {
-  const start = new Date("2024-01-01");
-  const today = new Date();
-  return Math.floor((today - start) / (1000 * 60 * 60 * 24));
-}
-
-// Decide today’s word length: 3, 4, or 5
-function getTodayWordLength() {
-  const lengths = [3, 4, 5];
-  return lengths[getDayIndex() % lengths.length];
-}
-
-// Pick today’s answer word
-function getTodayAnswer() {
-  const length = getTodayWordLength();
-  const words = WORDLE_WORDS[length];
-  return words[getDayIndex() % words.length];
-}
-
-// Pick 5 words (1 answer + 4 distractors)
-function getTodayChoices(answer) {
-  const length = answer.length;
-  const pool = WORDLE_WORDS[length].filter(w => w !== answer);
-
-  // Shuffle pool
-  pool.sort(() => Math.random() - 0.5);
-
-  // Take 4 distractors
-  const choices = pool.slice(0, 4);
-  choices.push(answer);
-
-  // Shuffle final 5
-  return choices.sort(() => Math.random() - 0.5);
-}
-
-// Show the 5 words as plain text
-function showWordleChoices() {
-  const answer = getTodayAnswer();
-  const choices = getTodayChoices(answer);
-
-  const box = document.getElementById("wordleChoices");
-  box.innerText = choices.join("   ");
-
-  return answer;
-}
-
-let answer = "";
-let attempt = 0;
-let currentGuess = "";
+// =====================
+// WORDLE GRID
+// =====================
 function startWordle() {
-  answer = getRandomAnswer();
-const choices = getTodayChoices(answer);
-
-const box = document.getElementById("wordleChoices");
-box.innerText = choices.join("   ");
-
-  attempt = 0;
-  currentGuess = "";
-
+  const answer = getRandomAnswer();
   const game = document.getElementById("game");
   game.innerHTML = `<div id="grid"></div>`;
 
-  buildGrid();
-  blurAllButtons();
-
-  // ✅ HIDE NZSL VIDEO ON NEW WORDLE
-  document.getElementById("nzslVideo").style.display = "none";
-}
-
-
-
-  function buildGrid() {
   const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-
   for (let i = 0; i < 6; i++) {
     const row = document.createElement("div");
     row.style.display = "flex";
-
     for (let j = 0; j < answer.length; j++) {
       const tile = document.createElement("div");
       tile.className = "tile";
       row.appendChild(tile);
     }
-
     grid.appendChild(row);
   }
 }
 
-function buildBank(){
-  let bank = document.getElementById("word-bank");
-  bank.innerHTML="";
+// =====================
+// CONNECTIONS DATA
+// =====================
+const NZSL_TOPICS = {
+  Animals: ["DOG","CAT","COW","PIG"],
+  Food: ["EAT","BREAD","MILK","SOUP"],
+  Feelings: ["HAPPY","SAD","ANGRY","PROUD"],
+  Actions: ["RUN","WALK","SIT","LOOK"]
+};
 
-  allWords.forEach(w=>{
-    let div = document.createElement("div");
-    div.className="word-option";
-
-    div.innerHTML = `
-      <video src="videos/${w}.mp4" muted></video>
-      <p>${w}</p>
-    `;
-
-    div.onmouseenter = ()=>div.querySelector("video").play();
-    div.onmouseleave = ()=>div.querySelector("video").pause();
-
-    div.onclick = ()=>guess(w);
-
-    bank.appendChild(div);
-  });
-}
-function checkWordLengths(wordBank) {
-  const problems = [];
-
-  Object.keys(wordBank).forEach(len => {
-    wordBank[len].forEach(word => {
-      if (word.length < 3 || word.length > 5) {
-        problems.push(word);
-      }
-    });
-  });
-
-  if (problems.length > 0) {
-    console.warn("⚠️ Words not 3–5 letters:", problems);
-  } else {
-    console.log("✅ All Wordle words are 3–5 letters");
-  }
-}
-function guess(word){
-  let row = document.getElementById("grid").children[attempt];
-
-  let isCorrect = true;
-
-  for(let i = 0; i < word.length; i++){
-    row.children[i].innerText = word[i];
-
-    if(word[i] === answer[i]){
-      row.children[i].classList.add("correct");
-    } else if(answer.includes(word[i])){
-      row.children[i].classList.add("present");
-      isCorrect = false;
-    } else {
-      row.children[i].classList.add("wrong");
-      isCorrect = false;
-    }
-  }
-
-  // ✅ SHOW NZSL VIDEO ONLY IF ENTIRE WORD IS CORRECT
-  if(isCorrect) {
-    showNZSLVideo(answer);
-  }
-
-  attempt++;
-}
-document.addEventListener("keydown", (e) => {
-  const grid = document.getElementById("grid");
-  if (!grid) return;
-  if (!answer) return;
-  if (attempt >= 6) return;
-
-  const row = grid.children[attempt];
-  if (!row) return;
-
-  // BACKSPACE
-  if (e.key === "Backspace") {
-    currentGuess = currentGuess.slice(0, -1);
-  }
-
-  // ENTER → submit guess and STOP further handling
-  else if (e.key === "Enter") {
-    e.preventDefault(); // 🔒 prevent buttons from firing
-
-    if (currentGuess.length === answer.length) {
-      guess(currentGuess);
-      currentGuess = "";
-    }
-    return;
-  }
-
-  // LETTER KEYS
-  else if (/^[a-zA-Z]$/.test(e.key)) {
-    if (currentGuess.length < answer.length) {
-      currentGuess += e.key.toUpperCase();
-    }
-  }
-
-  // Update display WHILE TYPING ONLY
-  for (let i = 0; i < answer.length; i++) {
-    row.children[i].innerText = currentGuess[i] || "";
-  }
-});
-// ---------------- CONTROLS ----------------
-function newGame(){
-  startConnections();
-}
-
-// LOAD
-startConnections();
-document.querySelectorAll(".tile").forEach(tile => {
-  tile.style.background = "white";
-});
-function startConnections(){
-  groups = generateConnectionsPuzzle();
-  allWords = [...new Set(groups.flatMap(g => g.words))];
-
-  document.getElementById("message").innerText = "Find 4 groups of 4";
-  document.getElementById("wordleChoices").innerText = "";
+// =====================
+// CONNECTIONS GAME
+// =====================
+function startConnections() {
   const game = document.getElementById("game");
+  game.innerHTML = `<div class="grid"></div>`;
+  const grid = document.querySelector(".grid");
 
-  let shuffled = [...allWords].sort(() => 0.5 - Math.random());
-
-  let html = `<div class="grid">`;
-  shuffled.forEach(word => {
-    html += `
-    <div class="tile" onclick="selectTile(this,'${word}')">
-
-    <img src="images/connections/${word}.png" alt="${word}">
-    <div>${word}</div>
-  </div>
-
-    `;
+  Object.values(NZSL_TOPICS).flat().forEach(word => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = word;
+    grid.appendChild(tile);
   });
-  html += `</div>
-    <button onclick="submitGroup()">Submit</button>`;
-
-  game.innerHTML = html;
-
-  selected = [];
-  mistakes = 0;
 }
-  function getRandomAnswer() {
-  const lengths = Object.keys(WORDLE_WORDS);
-  const length = lengths[Math.floor(Math.random() * lengths.length)];
-  const words = WORDLE_WORDS[length];
-  return words[Math.floor(Math.random() * words.length)];
-}
-  console.log("✅ Script loaded");
 
-document.getElementById("game").innerHTML = `
-  <div style="display:grid; grid-template-columns:repeat(4,120px); gap:10px; justify-content:center;">
-    <div class="tile">TEST</div>
-    <div class="tile">BOX</div>
-    <div class="tile">SHOW</div>
-    <div class="tile">HERE</div>
-  </div>
-`;
-``
+// =====================
+// START GAME
+// =====================
+startConnections();
+console.log("✅ Script running");
 </script>
 
 </body>
