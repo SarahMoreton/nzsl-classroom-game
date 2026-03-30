@@ -237,7 +237,7 @@ function startWordle(length) {
   document.getElementById("message").textContent =
     "Type letters and press Enter";
 }
-  document.addEventListener("keydown", e => {
+ document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid || attempt >= 6) return;
 
@@ -260,32 +260,7 @@ function startWordle(length) {
 
   for (let i = 0; i < answer.length; i++) {
     row.children[i].textContent = currentGuess[i] || "";
-  }function submitGuess(word) {
-  const row = document.getElementById("grid").children[attempt];
-  let win = true;
-
-  for (let i = 0; i < word.length; i++) {
-    if (word[i] === answer[i]) {
-      row.children[i].classList.add("correct");
-    } 
-    else if (answer.includes(word[i])) {
-      row.children[i].classList.add("present");
-      win = false;
-    } 
-    else {
-      row.children[i].classList.add("wrong");
-      win = false;
-    }
   }
-
-  if (win) {
-    document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6; // lock Wordle
-  } else {
-    document.getElementById("message").textContent = "Try again";
-    attempt++;
-  }
-}
 
 });
 /* START */
