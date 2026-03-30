@@ -343,6 +343,7 @@ const NZSL_TOPICS = {
 // =====================
 // CONNECTIONS GAME
 // =====================
+
 function startConnections() {
   const game = document.getElementById("game");
 
@@ -363,24 +364,17 @@ function startConnections() {
 
   let html = `<div class="grid">`;
   allWords.forEach(word => {
-  html += `
-  <div class="tile">
-    <a
-      href="https://www.google.com/search?q=site:nzsl.nz+${encodeURIComponent(word)}"
-      target="_blank"
-      style="text-decoration:none; color:inherit;"
-    >
-      ${word}
-    </a>
-  </div>
-`;
-  });
-  html += `</div>`;
-
-  game.innerHTML = html;
+    html += `
+      <div class="tile">
+        <a
+          href="https://www.google.com/search?q=site:nzsl.nz+${encodeURIComponent(word)}"
+          target="_blank"
+          style="text-decoration:none; color:inherittml;
   document.getElementById("message").innerText = "Find 4 groups of 4";
   document.getElementById("wordleChoices").innerText = "";
 }
+
+
 // =====================
 // START GAME
 // =====================
