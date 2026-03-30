@@ -141,33 +141,28 @@ const WORDLE_WORDS = {
     "SUN","SKY","SEA","DAY","ICE","HOT","WET","DRY","FUN","RED",
     "BIG","OLD","NEW","TOP","LOW","HAT","BED","CUP","PEN","BOX",
     "BAG","MAP","CAR","BUS","VAN","KEY","TOY","PAN","POT","LOG",
-    "ARM","LEG","EYE","EAR","LIP","NOSE","MUM","DAD","BOY","GIRL",
-    "MAN","HIM","HER","RUN","SIT","EAT","JAM","ZIP","CAP","RUG",
-    "NET","BAT","FAN","BEE","OWL","PIG","COW","HEN"
+    "ARM","LEG","EYE","EAR","LIP","MUM","DAD","BOY","GIRL","MAN",
+    "RUN","SIT","EAT","JAM","ZIP","CAP","RUG","NET","FAN","BEE"
   ],
 
   4: [
     "HOME","HAND","HELP","BOOK","READ","PLAY","WALK","LOOK","OPEN","STOP",
     "TURN","MOVE","WAIT","COME","GOES","WORK","JOIN","SEND","MAKE","TAKE",
     "FOOD","RICE","MILK","FISH","MEAT","BREAD","SOUP","CAKE","EGGS","FRUIT",
-    "FAST","SLOW","HARD","SOFT","LOUD","CALM","SAFE","FULL","EMPT","WARM",
-    "COLD","GOOD","KIND","NICE","MEAN","BEST","BAD","TRUE","REAL","FAKE",
-    "LONG","TALL","HIGH","LOW","LEFT","RIGHT","OPEN","SHUT","PUSH","PULL",
-    "DROP","LIFT","HOLD","GIVE","TAKE","SEND","KEEP","LOSE","FIND","SHOW",
-    "RAIN","WIND","CLOUD","SNOW","STORM","DARK","LITE","BLUE","PINK","GRAY",
-    "BLACK","WHITE","BROWN","GREEN","SMILE","CRY","HUG","KISS","WAVE"
+    "FAST","SLOW","HARD","SOFT","LOUD","CALM","SAFE","FULL","WARM","COLD",
+    "GOOD","KIND","NICE","MEAN","BEST","LONG","TALL","HIGH","LOW","LEFT",
+    "PUSH","PULL","DROP","LIFT","HOLD","GIVE","KEEP","LOSE","FIND","SHOW"
   ],
 
   5: [
-    "HAPPY","SADLY","TIRED","ANGRY","PROUD","CALM","AFRAID","SHAME","SMILE","LAUGH",
-    "CRIES","TEARS","WORRY","RELAX","BRAVE","SCARED","BORED","EXCITE","THANK",
-    "FRIEND","TEACH","LEARN","WRITE","READS","DRINK","EATS","PLAYS","WATCH","LISTEN",
-    "THINK","KNOWS","HELPS","SHARE","SLEEP","WAKES","START","STOPS","BRING","TAKES",
-    "GIVES","HOLDS","CARRY","BREAK","FIXES","BUILT","MAKES","COOKS","DRIVE","RIDES",
-    "WALKS","RUNS","JUMPS","CLAPS","POINT","LOOKS","TALKS","SIGNS","READS","WRITES",
-    "OPENS","CLOSE","WAIT","WORKS","MOVES","STANDS","SITS","LEADS","FOLLO"
+    "HAPPY","SADLY","TIRED","ANGRY","PROUD","CALM","SMILE","LAUGH","BRAVE",
+    "FRIEND","TEACH","LEARN","WRITE","READS","DRINK","EATS","PLAYS","WATCH",
+    "THINK","HELPS","SHARE","SLEEP","WAKES","START","STOPS","BRING","TAKES",
+    "GIVES","HOLDS","CARRY","BREAK","FIXES","MAKES","COOKS","DRIVE","RIDES",
+    "WALKS","RUNS","JUMPS","CLAPS","POINT","LOOKS","TALKS"
   ]
 };
+
 
 const NZSL_TOPICS = {
   Animals: [
@@ -183,27 +178,22 @@ const NZSL_TOPICS = {
     "RUN","WALK","JUMP","EAT","SIT","LOOK","READ","WRITE"
   ]
 };
-function checkWordLengths(wordBank) {
-  const problems = [];
-
-  Object.values(wordBank).forEach(list => {
-    list.forEach(word => {
-      if (word.length < 3 || word.length > 5) {
-        problems.push(word);
-      }
-    });
-  });
-
-  if (problems.length) {
-    console.warn("⚠️ Invalid Wordle words:", problems);
+function checkWordLengths(bank) {
+  const bad = [];
+  Object.values(bank).forEach(list =>
+    list.forEach(w => {
+      if (w.length < 3 || w.length > 5) bad.push(w);
+    })
+  );
+  if (bad.length) {
+    console.warn("⚠️ Invalid Wordle words:", bad);
   } else {
     console.log("✅ All Wordle words are 3–5 letters");
   }
 }
 
-// ✅ Call it once
+// Call it once
 checkWordLengths(WORDLE_WORDS);
-;
 
 // ---------------- CONNECTIONS ----------------
 function pickRandom(arr, n) {
@@ -421,7 +411,7 @@ function checkWordLengths(wordBank) {
     console.log("✅ All Wordle words are 3–5 letters");
   }
 }
-``
+
 function guess(word){
   let row = document.getElementById("grid").children[attempt];
 
