@@ -156,26 +156,31 @@ function checkSelections() {
     return;
   }
 
-  const words = [...selected].map(tile => tile.innerText);
-  document.getElementById("message").innerText =
-    "You selected: " + words.join(", ");
+  const words = [...selected].map(tile => tile.innerText.trim());
+  const topics = words.map(word => WORD_TO_TOPIC[word]);
+
+  const allSameTopic = topics.every(t => t === topics[0]);
+
+  if (allSameTopic) {
+    document.getElementById("message").innerText =
+      "✅ Correct! Category: " + topics[0];
+
+    selected.forEach(tile => {
+      tile.classList.remove("selected");
+      tile.classList.add("correct");
+      tile.onclick = null; // lock correct tiles
+    });
+  } else {
+    document.getElementById("message").innerText =
+      "❌ Not a correct group. Try again.";
+
+    selected.forEach(tile => {
+      tile.classList.remove("selected");
+      tile.classList.add("wrong");
+      setTimeout(() => tile.classList.remove("wrong"), 600);
+    });
+  }
 }
-
-// ✅ GLOBAL WORDLE STATE (must be outside any function)
-let answer = "";
-let attempt = 0;
-let currentGuess = "";
-
-// ✅ NZSL VIDEO REVEAL
-function showNZSLVideo(word) {
-  const container = document.getElementById("nzslVideo");
-  const video = document.getElementById("nzslPlayer");
-
-  video.src = `videos/nzsl/${word}.mp4`;
-  container.style.display = "block";
-  video.load();
-}
-
 // =====================
 // WORDLE WORD BANK
 // =====================
@@ -307,7 +312,13 @@ document.addEventListener("keydown", e => {
   choices.push(answer);
   return choices.sort(() => Math.random() - 0.5);
 }
+const WORD_TO_TOPIC = {};
 
+for (const topic in NZSL_TOPICS) {
+  NZSL_TOPICS[topic].forEach(word => {
+    WORD_TO_TOPIC[word] = topic;
+  });
+}
 // =====================
 // CONNECTIONS DATA
 // =====================
