@@ -321,10 +321,9 @@ document.addEventListener("keydown", e => {
   }
 
   if (word === answer) {
-    document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6;
-  } else {
-    attempt++;
+  document.getElementById("message").textContent = "🎉 Solved!";
+  attempt = 6; // lock game
+
   }
 }
 
