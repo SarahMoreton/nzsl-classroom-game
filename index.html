@@ -26,6 +26,7 @@ button {
   display:flex;
   align-items:center;
   justify-content:center;
+  user-select:none;
 }
 
 /* ---------- CONNECTIONS ---------- */
@@ -34,7 +35,6 @@ button {
   grid-template-columns: repeat(4,120px);
   gap:10px;
   justify-content:center;
-  margin-top:20px;
 }
 
 .connectionsGrid .tile {
@@ -62,7 +62,12 @@ button {
 .wrong { background:#c9b458; color:black; }       /* yellow */
 .incorrect { background:#000000; color:white; }   /* black */
 
-#possibleWords { margin-top:12px; font-size:14px; }
+/* ---------- POSSIBLE WORD LIST ---------- */
+#possibleWords {
+  margin-top:12px;
+  font-size:14px;
+  display:none; /* ✅ hidden by default */
+}
 </style>
 </head>
 
@@ -72,6 +77,7 @@ button {
 
 <button onclick="startConnections()">Connections</button>
 <button onclick="startWordle()">Wordle</button>
+<button onclick="togglePossible()">👩‍🏫 Show / Hide Possible Words</button>
 <button onclick="revealWord()">👩‍🏫 Reveal Word</button>
 
 <h3 id="message"></h3>
@@ -106,19 +112,18 @@ function startConnections() {
     shuffled.slice(12,16)
   ];
 
-  const tiles = groups.flat().sort(() => Math.random() - 0.5);
   const grid = document.createElement("div");
   grid.className = "connectionsGrid";
 
-  tiles.forEach(w => {
-    const t = document.createElement("div");
-    t.className = "tile";
-    t.textContent = w;
-    t.onclick = () => {
-      t.classList.toggle("selected");
+  groups.flat().sort(() => Math.random() - 0.5).forEach(word => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = word;
+    tile.onclick = () => {
+      tile.classList.toggle("selected");
       checkConnections(groups);
     };
-    grid.appendChild(t);
+    grid.appendChild(tile);
   });
 
   game.appendChild(grid);
@@ -129,8 +134,8 @@ function checkConnections(groups) {
   const selected = [...document.querySelectorAll(".tile.selected")];
   if (selected.length !== 4) return;
 
-  const words = selected.map(t => t.textContent);
-  const match = groups.find(g => words.every(w => g.includes(w)));
+  const chosen = selected.map(t => t.textContent);
+  const match = groups.find(g => chosen.every(w => g.includes(w)));
 
   if (match) {
     selected.forEach(t => {
@@ -147,6 +152,7 @@ function checkConnections(groups) {
 
 /* ================= WORDLE ================= */
 let answer="", guess="", row=0;
+let possibleListDiv=null;
 
 function dailyWord(list) {
   let h=0;
@@ -173,35 +179,40 @@ function startWordle() {
     }
     grid.appendChild(rowDiv);
   }
+
   game.appendChild(grid);
 
-  /* ------- 6 possible answers list ------- */
-  const options = [answer];
-  while (options.length < 6) {
-    const w = WORDS[Math.floor(Math.random()*WORDS.length)];
-    if (!options.includes(w)) options.push(w);
+  /* ---- Possible answers (6, hidden by default) ---- */
+  const options=[answer];
+  while(options.length<6){
+    const w=WORDS[Math.floor(Math.random()*WORDS.length)];
+    if(!options.includes(w)) options.push(w);
   }
 
-  const list=document.createElement("div");
-  list.id="possibleWords";
-  list.textContent="Possible words: " + options.sort(() => Math.random()-0.5).join(", ");
-  game.appendChild(list);
+  possibleListDiv=document.createElement("div");
+  possibleListDiv.id="possibleWords";
+  possibleListDiv.textContent="Possible words: "+options.sort(()=>Math.random()-0.5).join(", ");
+  game.appendChild(possibleListDiv);
 
   message.textContent="Type and press Enter";
 }
 
 document.addEventListener("keydown", e => {
   const grid=document.getElementById("wordleGrid");
-  if(!grid||row>=6) return;
+  if(!grid || row>=6) return;
 
   const tiles=grid.children[row].children;
 
-  if(e.key==="Backspace") guess=guess.slice(0,-1);
+  if(e.key==="Backspace"){
+    guess=guess.slice(0,-1);
+  }
   else if(e.key==="Enter"){
-    if(guess.length===answer.length) checkWordle(tiles);
+    if(guess.length===answer.length){
+      checkWordle(tiles);
+    }
     return;
   }
-  else if(/^[A-Za-z]$/.test(e.key)&&guess.length<answer.length){
+  else if(/^[A-Za-z]$/.test(e.key) && guess.length<answer.length){
     guess+=e.key.toUpperCase();
   }
 
@@ -214,6 +225,7 @@ function checkWordle(tiles){
   const count={};
   for(const c of answer) count[c]=(count[c]||0)+1;
 
+  /* GREEN pass */
   for(let i=0;i<answer.length;i++){
     if(guess[i]===answer[i]){
       tiles[i].classList.add("correct");
@@ -221,6 +233,7 @@ function checkWordle(tiles){
     }
   }
 
+  /* YELLOW / BLACK pass */
   for(let i=0;i<answer.length;i++){
     if(tiles[i].classList.contains("correct")) continue;
     if(count[guess[i]]>0){
@@ -233,19 +246,28 @@ function checkWordle(tiles){
 
   if(guess===answer){
     message.textContent="🎉 Solved!";
-    row=6;
+    row=6; /* ✅ lock the board */
     return;
   }
 
-  guess=""; row++;
+  /* ✅ move to next row, locking this one */
+  guess="";
+  row++;
   message.textContent="Try again";
 }
 
-/* ================= TEACHER REVEAL ================= */
+/* ================= TEACHER CONTROLS ================= */
 function revealWord(){
   if(answer) message.textContent="👩‍🏫 The word is: "+answer;
+}
+
+function togglePossible(){
+  if(!possibleListDiv) return;
+  possibleListDiv.style.display =
+    possibleListDiv.style.display === "none" ? "block" : "none";
 }
 </script>
 
 </body>
 </html>
+
