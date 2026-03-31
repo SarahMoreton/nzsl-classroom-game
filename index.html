@@ -282,12 +282,18 @@ document.addEventListener("keydown", e => {
     currentGuess = currentGuess.slice(0, -1);
   }
   else if (e.key === "Enter") {
-    if (currentGuess.length !== answer.length) return;
+  if (currentGuess.length !== answer.length) return;
 
-    submitGuess(currentGuess);
-    currentGuess = "";
-    return;
-  }
+  // ✅ submit + color the current row
+  submitGuess(currentGuess);
+
+  // ✅ CRITICAL: move away from this row immediately
+  attempt++;
+
+  // ✅ clear guess ONLY after moving rows
+  currentGuess = "";
+  return;
+}
   else if (/^[A-Za-z]$/.test(e.key) && currentGuess.length < answer.length) {
     currentGuess += e.key.toUpperCase();
   }
