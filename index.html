@@ -5,51 +5,64 @@
 <title>NZSL Connections + Wordle</title>
 
 <style>
-body{
+body {
   font-family: Arial, sans-serif;
   background:#f4f4f4;
   text-align:center;
   padding:20px;
 }
-button{ padding:10px; margin:6px; cursor:pointer; }
 
-/* ---------- TILES ---------- */
-.tile{
+button {
+  padding:10px;
+  margin:6px;
+  cursor:pointer;
+}
+
+/* ---------- TILE BASE ---------- */
+.tile {
   border:3px solid #333;
   border-radius:8px;
   font-weight:bold;
   display:flex;
   align-items:center;
   justify-content:center;
-  user-select:none;
 }
 
 /* ---------- CONNECTIONS ---------- */
-.connectionsGrid{
+.connectionsGrid {
   display:grid;
-  grid-template-columns:repeat(4,120px);
+  grid-template-columns: repeat(4,120px);
   gap:10px;
   justify-content:center;
+  margin-top:20px;
 }
-.connectionsGrid .tile{
-  width:120px; height:120px; background:#fff;
+
+.connectionsGrid .tile {
+  width:120px;
+  height:120px;
+  background:white;
 }
-.selected{ border-color:#2563eb; }
-.solved{ background:#6aaa64; color:#fff; }
+
+.selected { border-color:#2563eb; }
+.solved { background:#6aaa64; color:white; }
 
 /* ---------- WORDLE ---------- */
-#wordleGrid{ display:grid; gap:8px; justify-content:center; }
-.wordleRow{ display:grid; gap:6px; }
-.wordleRow .tile{
-  width:50px; height:50px; font-size:22px; background:#fff;
+#wordleGrid { display:grid; gap:8px; justify-content:center; }
+.wordleRow { display:grid; gap:6px; }
+
+.wordleRow .tile {
+  width:50px;
+  height:50px;
+  font-size:22px;
+  background:white;
 }
 
 /* ---------- WORDLE COLOURS ---------- */
-.correct{ background:#6aaa64; color:#fff; }      /* GREEN */
-.wrong{ background:#c9b458; color:#000; }        /* YELLOW – wrong place */
-.incorrect{ background:#000000; color:#fff; }   /* BLACK */
+.correct { background:#6aaa64; color:white; }     /* green */
+.wrong { background:#c9b458; color:black; }       /* yellow */
+.incorrect { background:#000000; color:white; }   /* black */
 
-#possibleWords{ margin-top:12px; font-size:14px; }
+#possibleWords { margin-top:12px; font-size:14px; }
 </style>
 </head>
 
@@ -65,57 +78,43 @@ button{ padding:10px; margin:6px; cursor:pointer; }
 <div id="game"></div>
 
 <script>
-/* ==================================================
-   FULL WORD BANK (100+ WORDS)
-   SAME LIST USED FOR BOTH GAMES
-================================================== */
+/* ================= WORD BANK (100+ WORDS) ================= */
 const WORDS = [
-  // Animals
   "DOG","CAT","COW","PIG","HORSE","SHEEP","GOAT","DUCK","CHICKEN","BIRD",
   "FISH","SHARK","WHALE","DOLPHIN","EAGLE","OWL","RABBIT","MOUSE","RAT",
-  "LION","TIGER","BEAR",
-  // Food
-  "BREAD","RICE","MILK","CHEESE","APPLE","PEAR","BANANA","ORANGE","PASTA",
-  "SOUP","CAKE","BUTTER","HONEY","YOGURT","WATER","MEAT","EGGS","CHIPS","BISCUIT",
-  // Feelings
-  "HAPPY","SAD","ANGRY","CALM","EXCITED","TIRED","SCARED","PROUD","WORRIED",
-  "BORED","CONFUSED","RELAXED","SURPRISED","SAFE","SORRY",
-  // Actions
+  "LION","TIGER","BEAR","BREAD","RICE","MILK","CHEESE","APPLE","PEAR",
+  "BANANA","ORANGE","PASTA","SOUP","CAKE","BUTTER","HONEY","YOGURT",
+  "WATER","MEAT","EGGS","CHIPS","BISCUIT","HAPPY","SAD","ANGRY","CALM",
+  "EXCITED","TIRED","SCARED","PROUD","WORRIED","BORED","CONFUSED","SAFE",
   "RUN","WALK","JUMP","SIT","STAND","READ","WRITE","LOOK","LISTEN",
   "PLAY","EAT","DRINK","HELP","CARRY","OPEN","CLOSE","WAIT",
-  // People
   "MUM","DAD","BOY","GIRL","TEACHER","FRIEND","BABY","DOCTOR","NURSE",
-  "POLICE","WORKER","HELPER",
-  // Objects / Places
-  "CHAIR","TABLE","HOUSE","SCHOOL","PARK","ROAD","CAR","BUS","BOOK",
-  "PENCIL","BAG","SHOES","HAT","COAT","PHONE","CLOCK","DOOR","WINDOW"
+  "POLICE","WORKER","HELPER","CHAIR","TABLE","HOUSE","SCHOOL","PARK",
+  "ROAD","CAR","BUS","BOOK","PENCIL","BAG","SHOES","HAT","COAT"
 ];
 
-/* ==================================================
-   CONNECTIONS (16 TILES, AUTO-CHECK)
-================================================== */
-function startConnections(){
+/* ================= CONNECTIONS ================= */
+function startConnections() {
   const game = document.getElementById("game");
   game.innerHTML = "";
 
-  // Make 4 groups of 4 from a shuffled list
-  const shuffled=[...WORDS].sort(()=>Math.random()-0.5);
-  const groups=[
+  const shuffled = [...WORDS].sort(() => Math.random() - 0.5);
+  const groups = [
     shuffled.slice(0,4),
     shuffled.slice(4,8),
     shuffled.slice(8,12),
     shuffled.slice(12,16)
   ];
-  const tiles=groups.flat().sort(()=>Math.random()-0.5);
 
-  const grid=document.createElement("div");
-  grid.className="connectionsGrid";
+  const tiles = groups.flat().sort(() => Math.random() - 0.5);
+  const grid = document.createElement("div");
+  grid.className = "connectionsGrid";
 
-  tiles.forEach(w=>{
-    const t=document.createElement("div");
-    t.className="tile";
-    t.textContent=w;
-    t.onclick=()=>{
+  tiles.forEach(w => {
+    const t = document.createElement("div");
+    t.className = "tile";
+    t.textContent = w;
+    t.onclick = () => {
       t.classList.toggle("selected");
       checkConnections(groups);
     };
@@ -123,73 +122,77 @@ function startConnections(){
   });
 
   game.appendChild(grid);
-  message.textContent="Select 4 words that belong together";
+  message.textContent = "Select 4 words that belong together";
 }
 
-function checkConnections(groups){
-  const selected=[...document.querySelectorAll(".tile.selected")];
-  if(selected.length!==4) return;
+function checkConnections(groups) {
+  const selected = [...document.querySelectorAll(".tile.selected")];
+  if (selected.length !== 4) return;
 
-  const chosen=selected.map(t=>t.textContent);
-  const match=groups.find(g=>chosen.every(w=>g.includes(w)));
+  const words = selected.map(t => t.textContent);
+  const match = groups.find(g => words.every(w => g.includes(w)));
 
-  if(match){
-    selected.forEach(t=>{
+  if (match) {
+    selected.forEach(t => {
       t.classList.remove("selected");
       t.classList.add("solved");
-      t.onclick=null;
+      t.onclick = null;
     });
-    message.textContent="✅ Correct group!";
-  }else{
-    selected.forEach(t=>t.classList.remove("selected"));
-    message.textContent="❌ Try again";
+    message.textContent = "✅ Correct group!";
+  } else {
+    selected.forEach(t => t.classList.remove("selected"));
+    message.textContent = "❌ Try again";
   }
 }
 
-/* ==================================================
-   WORDLE (6 ROWS, DAILY ANSWER)
-================================================== */
+/* ================= WORDLE ================= */
 let answer="", guess="", row=0;
 
-function dailyFrom(list){
+function dailyWord(list) {
   let h=0;
-  for(const c of new Date().toDateString()) h+=c.charCodeAt(0);
+  for (const c of new Date().toDateString()) h+=c.charCodeAt(0);
   return list[h % list.length];
 }
 
-function startWordle(){
-  answer=dailyFrom(WORDS).toUpperCase();
+function startWordle() {
+  answer = dailyWord(WORDS).toUpperCase();
   guess=""; row=0;
 
-  const game=document.getElementById("game");
+  const game = document.getElementById("game");
   game.innerHTML="";
 
   const grid=document.createElement("div");
   grid.id="wordleGrid";
 
-  for(let r=0;r<6;r++){
+  for (let r=0;r<6;r++){
     const rowDiv=document.createElement("div");
     rowDiv.className="wordleRow";
     rowDiv.style.gridTemplateColumns=`repeat(${answer.length},50px)`;
-    for(let c=0;c<answer.length;c++){
+    for (let c=0;c<answer.length;c++){
       rowDiv.appendChild(document.createElement("div")).className="tile";
     }
     grid.appendChild(rowDiv);
   }
-
   game.appendChild(grid);
+
+  /* ------- 6 possible answers list ------- */
+  const options = [answer];
+  while (options.length < 6) {
+    const w = WORDS[Math.floor(Math.random()*WORDS.length)];
+    if (!options.includes(w)) options.push(w);
+  }
 
   const list=document.createElement("div");
   list.id="possibleWords";
-  list.textContent="Possible words: "+WORDS.join(", ");
+  list.textContent="Possible words: " + options.sort(() => Math.random()-0.5).join(", ");
   game.appendChild(list);
 
   message.textContent="Type and press Enter";
 }
 
-document.addEventListener("keydown",e=>{
+document.addEventListener("keydown", e => {
   const grid=document.getElementById("wordleGrid");
-  if(!grid || row>=6) return;
+  if(!grid||row>=6) return;
 
   const tiles=grid.children[row].children;
 
@@ -198,19 +201,19 @@ document.addEventListener("keydown",e=>{
     if(guess.length===answer.length) checkWordle(tiles);
     return;
   }
-  else if(/^[a-zA-Z]$/.test(e.key) && guess.length<answer.length){
+  else if(/^[A-Za-z]$/.test(e.key)&&guess.length<answer.length){
     guess+=e.key.toUpperCase();
   }
 
-  for(let i=0;i<answer.length;i++)
+  for(let i=0;i<answer.length;i++){
     tiles[i].textContent=guess[i]||"";
+  }
 });
 
 function checkWordle(tiles){
   const count={};
   for(const c of answer) count[c]=(count[c]||0)+1;
 
-  // GREEN pass
   for(let i=0;i<answer.length;i++){
     if(guess[i]===answer[i]){
       tiles[i].classList.add("correct");
@@ -218,28 +221,27 @@ function checkWordle(tiles){
     }
   }
 
-  // YELLOW / BLACK pass
   for(let i=0;i<answer.length;i++){
     if(tiles[i].classList.contains("correct")) continue;
     if(count[guess[i]]>0){
-      tiles[i].classList.add("wrong");      // YELLOW (wrong place)
+      tiles[i].classList.add("wrong");
       count[guess[i]]--;
-    }else{
-      tiles[i].classList.add("incorrect");  // BLACK (not in word)
+    } else {
+      tiles[i].classList.add("incorrect");
     }
   }
 
   if(guess===answer){
     message.textContent="🎉 Solved!";
-    row=6; return;
+    row=6;
+    return;
   }
 
-  guess=""; row++; message.textContent="Try again";
+  guess=""; row++;
+  message.textContent="Try again";
 }
 
-/* ==================================================
-   TEACHER REVEAL
-================================================== */
+/* ================= TEACHER REVEAL ================= */
 function revealWord(){
   if(answer) message.textContent="👩‍🏫 The word is: "+answer;
 }
