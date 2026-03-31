@@ -273,7 +273,8 @@ document.getElementById("wordleChoices").textContent =
 document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid) return;
-if (attempt >= 6
+  if (attempt >= 6) return;
+
   const row = grid.children[attempt];
   if (!row) return;
 
@@ -281,22 +282,22 @@ if (attempt >= 6
     currentGuess = currentGuess.slice(0, -1);
   }
   else if (e.key === "Enter") {
-  if (currentGuess.length !== answer.length) return;
+    if (currentGuess.length !== answer.length) return;
 
-  else if (e.key === "Enter") {
-  if (currentGuess.length !== answer.length) return;
+    submitGuess(currentGuess);
+    currentGuess = "";
+    return;
+  }
+  else if (/^[A-Za-z]$/.test(e.key) && currentGuess.length < answer.length) {
+    currentGuess += e.key.toUpperCase();
+  }
 
-  submitGuess(currentGuess);
+  for (let i = 0; i < answer.length; i++) {
+    row.children[i].textContent = currentGuess[i] || "";
+  }
+});
 
-  // ✅ CRITICAL: move off the submitted row
-  attempt++;
-
-  currentGuess = "";
-  return;
-}
-
-
-   function submitGuess(word) {
+  function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
 
   for (let i = 0; i < word.length; i++) {
@@ -315,11 +316,12 @@ if (attempt >= 6
 
   if (word === answer) {
     document.getElementById("message").textContent = "🎉 Solved!";
-    attempt = 6; // lock game
+    attempt = 6;
   } else {
     attempt++;
   }
 }
+
 
 
 /* START */
