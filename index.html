@@ -57,6 +57,20 @@ button {
 </head>
 
 <body>
+.correct {
+  background: #6aaa64; /* green */
+  color: white;
+}
+
+.present {
+  background: #c9b458; /* yellow */
+  color: black;
+}
+
+.wrong {
+  background: #787c7e; /* black/grey */
+  color: white;
+}
 
 <h1>NZSL Classroom Game</h1>
 
@@ -304,27 +318,49 @@ document.addEventListener("keydown", e => {
 
   function submitGuess(word) {
   const row = document.getElementById("grid").children[attempt];
+  const answerLetters = answer.split("");
+  const guessLetters = word.split("");
 
-  for (let i = 0; i < word.length; i++) {
-    row.children[i].textContent = word[i];
+  // Track counts of letters in the answer
+  const letterCounts = {};
+  answerLetters.forEach(l => {
+    letterCounts[l] = (letterCounts[l] || 0) + 1;
+  });
 
-    if (word[i] === answer[i]) {
-      row.children[i].classList.add("correct");
-    }
-    else if (answer.includes(word[i])) {
-      row.children[i].classList.add("present");
-    }
-    else {
-      row.children[i].classList.add("wrong");
+  // FIRST PASS: correct letters in correct position (GREEN)
+  for (let i = 0; i < guessLetters.length; i++) {
+    const tile = row.children[i];
+    tile.textContent = guessLetters[i];
+
+    if (guessLetters[i] === answerLetters[i]) {
+      tile.classList.add("correct");
+      letterCounts[guessLetters[i]]--;
+      guessLetters[i] = null; // mark as used
     }
   }
 
+  // SECOND PASS: correct letters in wrong position (YELLOW) or wrong (BLACK)
+  for (let i = 0; i < guessLetters.length; i++) {
+    if (guessLetters[i] === null) continue;
+
+    const tile = row.children[i];
+
+    if (letterCounts[guessLetters[i]] > 0) {
+      tile.classList.add("present"); // yellow
+      letterCounts[guessLetters[i]]--;
+    } else {
+      tile.classList.add("wrong"); // black/grey
+    }
+  }
+
+  // ✅ Win check
   if (word === answer) {
-  message.textContent = "🎉 Solved!";
-  attempt = 6; // lock
-
-
+    document.getElementById("message").textContent = "🎉 Solved!";
+    attempt = 6; // lock the game
+    return;
   }
+
+  attempt++; // move to next row
 }
 
 
