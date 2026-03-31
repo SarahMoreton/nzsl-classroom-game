@@ -273,7 +273,7 @@ document.getElementById("wordleChoices").textContent =
 document.addEventListener("keydown", e => {
   const grid = document.getElementById("grid");
   if (!grid) return;
-
+if (attempt >= 6
   const row = grid.children[attempt];
   if (!row) return;
 
@@ -283,20 +283,17 @@ document.addEventListener("keydown", e => {
   else if (e.key === "Enter") {
   if (currentGuess.length !== answer.length) return;
 
+  else if (e.key === "Enter") {
+  if (currentGuess.length !== answer.length) return;
+
   submitGuess(currentGuess);
 
-  // ✅ move to the next row immediately
+  // ✅ CRITICAL: move off the submitted row
   attempt++;
 
-  currentGuess
-  else if (/^[A-Za-z]$/.test(e.key) && currentGuess.length < answer.length) {
-    currentGuess += e.key.toUpperCase();
-  }
-
-  for (let i = 0; i < answer.length; i++) {
-    row.children[i].textContent = currentGuess[i] || "";
-  }
-});
+  currentGuess = "";
+  return;
+}
 
 
    function submitGuess(word) {
