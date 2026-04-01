@@ -28,7 +28,8 @@ button {
   text-transform: uppercase;
 }
 
-/* ---------- WORDLE ---------- */
+/* ================= WORDLE ================= */
+
 #wordleGrid {
   display: grid;
   gap: 8px;
@@ -59,7 +60,8 @@ button {
   margin-top: 15px;
 }
 
-/* ---------- CONNECTIONS (FORCED BIGGER) ---------- */
+/* ================= CONNECTIONS (BIG BOXES) ================= */
+
 .connectionsGrid {
   display: grid;
   grid-template-columns: repeat(4, 160px);
@@ -68,15 +70,14 @@ button {
   margin-top: 20px;
 }
 
-/* IMPORTANT: force size so browser cannot collapse */
 .connectionsGrid .tile {
-  height: 110px !important;
-  font-size: 22px !important;
-  padding: 8px !important;
-  line-height: 1.2;
+  min-height: 120px;
+  font-size: 22px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-.selected { border: 3px solid blue; }
+.selected { border: 4px solid blue; }
 .solved   { background: #6aaa64; color: white; }
 </style>
 </head>
@@ -93,39 +94,38 @@ button {
 <div id="game"></div>
 
 <script>
-/* ===============================
-   LARGE NZSL WORD BANK (UNCHANGED)
-=============================== */
+/* ================= NZSL TOPIC WORD BANK ================= */
+
 const TOPICS = {
-  animals:[
+  animals: [
     "DOG","CAT","COW","SHEEP","HORSE","PIG","GOAT","BIRD","FISH","FROG",
     "BEAR","LION","TIGER","MOUSE","RABBIT","DUCK","CHICKEN","WHALE","DOLPHIN","SHARK"
   ],
-  food:[
+  food: [
     "APPLE","BANANA","ORANGE","PEAR","BREAD","CHEESE","MILK","WATER","JUICE","EGG",
     "RICE","PASTA","CAKE","BISCUIT","SOUP","MEAT","CHICKEN","PIZZA","SANDWICH","FISH"
   ],
-  people:[
+  people: [
     "MUM","DAD","BABY","CHILD","BOY","GIRL","FAMILY","FRIEND","ADULT","TEACHER",
     "STUDENT","DOCTOR","NURSE","POLICE","WORKER","MAN","WOMAN","GRANDMA","GRANDAD","COUSIN"
   ],
-  weather:[
+  weather: [
     "SUN","RAIN","WIND","SNOW","CLOUD","STORM","RAINBOW","MOON","STAR","SKY",
     "RIVER","SEA","BEACH","TREE","FLOWER","GRASS","ROCK","MOUNTAIN","FOREST","ISLAND"
   ],
-  transport:[
+  transport: [
     "CAR","BUS","TRAIN","PLANE","TRUCK","BIKE","BICYCLE","BOAT","SHIP","FERRY",
     "SCOOTER","MOTORBIKE","HELICOPTER","TAXI","VAN","AMBULANCE","POLICECAR","TRACTOR","SUBWAY","TRAM"
   ],
-  clothing:[
+  clothing: [
     "HAT","COAT","SHIRT","PANTS","SHORTS","SKIRT","DRESS","SOCKS","SHOES","JACKET",
     "JUMPER","SCARF","GLOVES","BELT","WATCH","GLASSES","BOOT","SANDALS","HOODIE","UNIFORM"
   ],
-  house:[
+  house: [
     "CHAIR","TABLE","COUCH","BED","LAMP","DOOR","WINDOW","CLOCK","PHONE","COMPUTER",
     "FRIDGE","FREEZER","MICROWAVE","TOILET","SHOWER","SINK","CARPET","SHELF","DRAWER","BIN"
   ],
-  school:[
+  school: [
     "BOOK","PENCIL","PEN","PAPER","BAG","DESK","BOARD","CLASS","SCHOOL","LESSON",
     "HOMEWORK","TEST","QUIZ","READ","WRITE","DRAW","LEARN","TEACH","STUDY","SPELL"
   ]
@@ -133,15 +133,14 @@ const TOPICS = {
 
 const WORD_BANK = Object.values(TOPICS).flat();
 
-/* ===============================
-   WORDLE (UNCHANGED)
-=============================== */
+/* ================= WORDLE ================= */
+
 let wordleAnswer = "";
 let wordleRow = 0;
-let wordleGridEl;
+let wordleGridEl = null;
 
-function pickWordleOptions(len) {
-  const pool = WORD_BANK.filter(w => w.length === len);
+function pickWordleOptions(length) {
+  const pool = WORD_BANK.filter(w => w.length === length);
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   while (shuffled.length < 6) shuffled.push(...shuffled);
   return shuffled.slice(0, 6);
@@ -183,8 +182,8 @@ function startWordle() {
   message.textContent = "Choose a word";
 }
 
-function guessWord(word, btn) {
-  btn.disabled = true;
+function guessWord(word, button) {
+  button.disabled = true;
   const tiles = wordleGridEl.children[wordleRow].children;
 
   for (let i = 0; i < 5; i++) {
@@ -209,9 +208,8 @@ function guessWord(word, btn) {
   }
 }
 
-/* ===============================
-   CONNECTIONS (UNCHANGED LOGIC)
-=============================== */
+/* ================= CONNECTIONS ================= */
+
 let connectionsSolutions = [];
 let selectedTiles = [];
 
@@ -226,6 +224,7 @@ function startConnections() {
   connectionsSolutions = keys.map(k => TOPICS[k].slice(0, 4));
 
   const words = connectionsSolutions.flat().sort(() => Math.random() - 0.5);
+
   const grid = document.createElement("div");
   grid.className = "connectionsGrid";
 
@@ -274,6 +273,8 @@ function submitConnections() {
 
   selectedTiles = [];
 }
+
+/* ================= RESET ================= */
 
 function newGame() {
   game.innerHTML = "";
