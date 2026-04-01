@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NZSL Wordle</title>
+<title>NZSL Wordle + Connections</title>
 
 <style>
 body {
@@ -19,9 +19,6 @@ button {
   cursor: pointer;
 }
 
-h1 { margin-bottom: 10px; }
-
-/* ---------- TILES ---------- */
 .tile {
   border: 2px solid #333;
   font-weight: bold;
@@ -31,230 +28,247 @@ h1 { margin-bottom: 10px; }
   text-transform: uppercase;
 }
 
-/* ---------- WORDLE GRID ---------- */
-#wordleGrid {
-  display: grid;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.wordleRow {
-  display: grid;
-  gap: 6px;
-}
-
-.wordleRow .tile {
-  width: 50px;
-  height: 50px;
-  font-size: 22px;
-}
-
-/* ---------- COLOURS ---------- */
-.correct   { background: #6aaa64; color: white; }
-.wrong     { background: #c9b458; color: black; }
-.incorrect { background: #000; color: white; }
-
-/* ---------- CHOICES ---------- */
 #choices {
-  margin-top: 16px;
   display: flex;
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 15px;
 }
 
-.choiceBtn:disabled {
-  opacity: 0.4;
-  cursor: default;
+/* Wordle colours */
+.correct { background: #6aaa64; color: white; }
+.wrong { background: #c9b458; color: black; }
+.incorrect { background: #000; color: white; }
+
+/* Connections */
+.connectionsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 120px);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
 }
+.selected { border: 3px solid blue; }
+.solved { background: #6aaa64; color: white; }
 </style>
 </head>
 
 <body>
 
-<h1>NZSL Wordle</h1>
+<h1>NZSL Wordle + Connections</h1>
 
-<button onclick="showMenu()">New Wordle</button>
+<button onclick="startWordle()">Wordle</button>
+<button onclick="startConnections()">Connections</button>
 
 <h3 id="message"></h3>
-<div id="controls"></div>
 <div id="game"></div>
 
 <script>
-/* =========================
-   WORD LIST
-   (simple, visual words)
-========================= */
-const WORDS = [
-  "DOG","CAT","COW","PIG","BIRD","FISH",
-  "RUN","WALK","JUMP","SIT",
-  "MUM","DAD","BOY","GIRL",
-  "SUN","RAIN","WIND","COLD",
-  "APPLE","PEAR","MILK","CAKE",
-  "CAR","BUS","BIKE","TRAIN",
-  "BOOK","BAG","HAT","COAT"
-];
+/* =====================================================
+   NZSL-ALIGNED WORD BANK (240+ words)
+   Organised by NZSL Dictionary topics
+===================================================== */
+const TOPICS = {
+  animals: [
+    "DOG","CAT","COW","SHEEP","HORSE","PIG","GOAT","BIRD","FISH","FROG",
+    "BEAR","LION","TIGER","MOUSE","RABBIT","DUCK","CHICKEN","WHALE","DOLPHIN","SHARK"
+  ],
+  food: [
+    "APPLE","BANANA","ORANGE","PEAR","BREAD","CHEESE","MILK","WATER","JUICE","EGG",
+    "RICE","PASTA","CAKE","BISCUIT","SOUP","MEAT","CHICKEN","PIZZA","SANDWICH","FISH"
+  ],
+  people: [
+    "MUM","DAD","BABY","CHILD","BOY","GIRL","FAMILY","FRIEND","ADULT","TEACHER",
+    "STUDENT","DOCTOR","NURSE","POLICE","WORKER","MAN","WOMAN","GRANDMA","GRANDAD","COUSIN"
+  ],
+  weather: [
+    "SUN","RAIN","WIND","SNOW","CLOUD","STORM","RAINBOW","MOON","STAR","SKY",
+    "RIVER","SEA","BEACH","TREE","FLOWER","GRASS","ROCK","MOUNTAIN","FOREST","ISLAND"
+  ],
+  transport: [
+    "CAR","BUS","TRAIN","PLANE","TRUCK","BIKE","BICYCLE","BOAT","SHIP","FERRY",
+    "SCOOTER","MOTORBIKE","HELICOPTER","TAXI","VAN","AMBULANCE","POLICECAR","TRACTOR","SUBWAY","TRAM"
+  ],
+  clothing: [
+    "HAT","COAT","SHIRT","PANTS","SHORTS","SKIRT","DRESS","SOCKS","SHOES","JACKET",
+    "JUMPER","SCARF","GLOVES","BELT","WATCH","GLASSES","BOOT","SANDALS","HOODIE","UNIFORM"
+  ],
+  house: [
+    "CHAIR","TABLE","COUCH","BED","LAMP","DOOR","WINDOW","CLOCK","PHONE","COMPUTER",
+    "FRIDGE","FREEZER","MICROWAVE","TOILET","SHOWER","SINK","CARPET","SHELF","DRAWER","BIN"
+  ],
+  school: [
+    "BOOK","PENCIL","PEN","PAPER","BAG","DESK","BOARD","CLASS","SCHOOL","LESSON",
+    "HOMEWORK","TEST","QUIZ","READ","WRITE","DRAW","LEARN","TEACH","STUDY","SPELL"
+  ],
+  actions: [
+    "RUN","WALK","JUMP","SIT","STAND","EAT","DRINK","SLEEP","PLAY","WATCH",
+    "LISTEN","LOOK","OPEN","CLOSE","CUT","BUILD","MAKE","CLEAN","HELP","STOP"
+  ],
+  colours: [
+    "RED","BLUE","GREEN","YELLOW","ORANGE","PURPLE","PINK","BLACK","WHITE","BROWN",
+    "GREY","GOLD","SILVER","LIGHT","DARK","BRIGHT","PALE","CLEAR","STRONG","SOFT"
+  ],
+  body: [
+    "HEAD","EYES","EARS","NOSE","MOUTH","HAND","ARM","LEG","FOOT","TOE",
+    "HEART","BRAIN","TEETH","FACE","BACK","SICK","HURT","PAIN","MEDICINE","REST"
+  ],
+  feelings: [
+    "HAPPY","SAD","ANGRY","EXCITED","TIRED","SCARED","CALM","PROUD","SHY","BRAVE",
+    "LOVE","LIKE","HATE","WORRIED","CONFUSED","BORED","SURPRISED","RELAXED","UPSET","OKAY"
+  ]
+};
 
-/* =========================
-   STATE
-========================= */
-let answer = "";
-let options = [];
-let row = 0;
+/* Flattened word bank for Wordle */
+const WORD_BANK = Object.values(TOPICS).flat();
 
-/* =========================
-   MENU
-========================= */
-function showMenu() {
-  controls.innerHTML = `
-    <label><strong>Word length:</strong></label>
-    <select id="lengthSelect">
-      <option value="3">3 letters</option>
-      <option value="4">4 letters</option>
-      <option value="5" selected>5 letters</option>
-    </select><br><br>
-    <button onclick="startWordle()">Start Wordle</button>
-  `;
-  game.innerHTML = "";
-  message.textContent = "Choose word length";
+/* =====================================================
+   WORDLE – pick 6 visually distinct words
+===================================================== */
+function tooSimilar(a, b) {
+  if (a.slice(-2) === b.slice(-2)) return true;
+  let shared = 0;
+  for (const c of a) if (b.includes(c)) shared++;
+  return shared >= a.length - 1;
 }
 
-/* =========================
-   PICK 6 DISTINCT WORDS
-   (no shared last letters)
-========================= */
-function pickDistinctWords(pool, count) {
+function pickWordleOptions(length) {
+  const pool = WORD_BANK.filter(w => w.length === length);
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   const chosen = [];
-  const usedEndings = new Set();
 
-  for (const word of shuffled) {
-    const ending = word.slice(-1);
-    if (!usedEndings.has(ending)) {
-      chosen.push(word);
-      usedEndings.add(ending);
+  for (const w of shuffled) {
+    if (chosen.every(x => !tooSimilar(x, w))) {
+      chosen.push(w);
     }
-    if (chosen.length === count) break;
+    if (chosen.length === 6) break;
   }
-
   return chosen;
 }
 
-/* =========================
-   START WORDLE
-========================= */
+/* =====================================================
+   WORDLE GAME
+===================================================== */
+let wordleAnswer = "";
+let wordleRow = 0;
+
 function startWordle() {
-  row = 0;
   game.innerHTML = "";
+  wordleRow = 0;
 
-  const len = Number(lengthSelect.value);
-  const pool = WORDS.filter(w => w.length === len);
+  const length = 5;
+  const options = pickWordleOptions(length);
+  wordleAnswer = options[Math.floor(Math.random() * options.length)];
 
-  options = pickDistinctWords(pool, 6);
-  answer = options[Math.floor(Math.random() * options.length)];
-
-  buildGrid(len);
-  showChoices();
-
-  message.textContent = "Choose a word";
-}
-
-/* =========================
-   BUILD GRID
-========================= */
-function buildGrid(len) {
   const grid = document.createElement("div");
   grid.id = "wordleGrid";
 
   for (let r = 0; r < 6; r++) {
-    const rowDiv = document.createElement("div");
-    rowDiv.className = "wordleRow";
-    rowDiv.style.gridTemplateColumns = `repeat(${len}, 50px)`;
-
-    for (let i = 0; i < len; i++) {
-      rowDiv.appendChild(document.createElement("div")).className = "tile";
+    const row = document.createElement("div");
+    row.style.display = "grid";
+    row.style.gridTemplateColumns = `repeat(${length}, 50px)`;
+    row.style.gap = "6px";
+    for (let i = 0; i < length; i++) {
+      row.appendChild(document.createElement("div")).className = "tile";
     }
-    grid.appendChild(rowDiv);
+    grid.appendChild(row);
   }
 
   game.appendChild(grid);
-}
 
-/* =========================
-   SHOW CHOICES
-========================= */
-function showChoices() {
-  const div = document.createElement("div");
-  div.id = "choices";
-
+  const choices = document.createElement("div");
+  choices.id = "choices";
   options.forEach(word => {
     const b = document.createElement("button");
     b.textContent = word;
-    b.className = "choiceBtn";
-    b.onclick = () => {
-      b.disabled = true;
-      submitGuess(word);
-    };
-    div.appendChild(b);
+    b.onclick = () => guessWord(word, b);
+    choices.appendChild(b);
   });
+  game.appendChild(choices);
 
-  game.appendChild(div);
+  message.textContent = "Choose a word";
 }
 
-/* =========================
-   WORDLE LOGIC
-========================= */
-function submitGuess(word) {
-  const tiles = wordleGrid.children[row].children;
-  const counts = {};
+function guessWord(word, btn) {
+  btn.disabled = true;
+  const tiles = wordleGrid.children[wordleRow].children;
 
-  for (const c of answer) counts[c] = (counts[c] || 0) + 1;
-
-  // correct letters
-  for (let i = 0; i < answer.length; i++) {
+  for (let i = 0; i < word.length; i++) {
     tiles[i].textContent = word[i];
-    if (word[i] === answer[i]) {
-      tiles[i].classList.add("correct");
-      counts[word[i]]--;
-    }
+    tiles[i].className = "tile " +
+      (word[i] === wordleAnswer[i] ? "correct" :
+       wordleAnswer.includes(word[i]) ? "wrong" : "incorrect");
   }
 
-  // misplaced / incorrect
-  for (let i = 0; i < answer.length; i++) {
-    if (tiles[i].classList.contains("correct")) continue;
-    if (counts[word[i]] > 0) {
-      tiles[i].classList.add("wrong");
-      counts[word[i]]--;
-    } else {
-      tiles[i].classList.add("incorrect");
-    }
-  }
-
-  if (word === answer) {
+  if (word === wordleAnswer) {
     message.textContent = "✅ Correct!";
-    disableChoices();
     return;
   }
-
-  row++;
-
-  if (row === 6) {
-    message.textContent = `❌ The word was ${answer}`;
-    disableChoices();
+  wordleRow++;
+  if (wordleRow === 6) {
+    message.textContent = `❌ The word was ${wordleAnswer}`;
   }
 }
 
-/* =========================
-   DISABLE BUTTONS
-========================= */
-function disableChoices() {
-  document.querySelectorAll(".choiceBtn")
-    .forEach(b => b.disabled = true);
-}
+/* =====================================================
+   CONNECTIONS – random NZSL topics each play
+===================================================== */
+function startConnections() {
+  game.innerHTML = "";
+  message.textContent = "Find 4 groups";
 
-/* Start with menu */
-showMenu();
+  const topicKeys = Object.keys(TOPICS)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
+
+  const solutionGroups = topicKeys.map(k =>
+    [...TOPICS[k]].sort(() => Math.random() - 0.5).slice(0, 4)
+  );
+
+  const words = solutionGroups.flat().sort(() => Math.random() - 0.5);
+
+  let selected = [];
+  const grid = document.createElement("div");
+  grid.className = "connectionsGrid";
+
+  words.forEach(word => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = word;
+
+    tile.onclick = () => {
+      if (tile.classList.contains("solved")) return;
+      tile.classList.toggle("selected");
+      selected = [...document.querySelectorAll(".selected")];
+      if (selected.length > 4) selected[0].classList.remove("selected");
+    };
+
+    grid.appendChild(tile);
+  });
+
+  game.appendChild(grid);
+
+  const btn = document.createElement("button");
+  btn.textContent = "Submit Group";
+  btn.onclick = () => {
+    if (selected.length !== 4) return;
+
+    const attempt = selected.map(t => t.textContent);
+    const match = solutionGroups.find(g => attempt.every(w => g.includes(w)));
+
+    if (match) {
+      selected.forEach(t => {
+        t.classList.remove("selected");
+        t.classList.add("solved");
+      });
+    } else {
+      selected.forEach(t => t.classList.remove("selected"));
+    }
+  };
+
+  game.appendChild(btn);
+}
 </script>
 
 </body>
