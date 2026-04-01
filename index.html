@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NZSL Wordle + Connections</title>
+<title>NZSL Wordle</title>
 
 <style>
 body {
@@ -21,7 +21,7 @@ button {
 
 h1 { margin-bottom: 10px; }
 
-/* ---------- TILE ---------- */
+/* ---------- TILES ---------- */
 .tile {
   border: 2px solid #333;
   font-weight: bold;
@@ -31,11 +31,12 @@ h1 { margin-bottom: 10px; }
   text-transform: uppercase;
 }
 
-/* ---------- WORDLE ---------- */
+/* ---------- WORDLE GRID ---------- */
 #wordleGrid {
   display: grid;
   gap: 8px;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .wordleRow {
@@ -49,14 +50,14 @@ h1 { margin-bottom: 10px; }
   font-size: 22px;
 }
 
-/* Wordle colours */
-.correct { background: #6aaa64; color: white; }
-.wrong   { background: #c9b458; color: black; }
+/* ---------- COLOURS ---------- */
+.correct   { background: #6aaa64; color: white; }
+.wrong     { background: #c9b458; color: black; }
 .incorrect { background: #000; color: white; }
 
-/* Wordle choices */
+/* ---------- CHOICES ---------- */
 #choices {
-  margin-top: 12px;
+  margin-top: 16px;
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -67,40 +68,14 @@ h1 { margin-bottom: 10px; }
   opacity: 0.4;
   cursor: default;
 }
-
-/* ---------- CONNECTIONS ---------- */
-.connectionsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 110px);
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.connectionsGrid .tile {
-  height: 80px;
-  cursor: pointer;
-}
-
-.selected { border: 3px solid blue; }
-.solved   { background: #6aaa64; color: white; }
-
-/* ---------- CONTROLS ---------- */
-#lengthSelect {
-  margin: 8px;
-  font-size: 16px;
-}
 </style>
 </head>
 
 <body>
 
-<h1>NZSL Wordle + Connections</h1>
+<h1>NZSL Wordle</h1>
 
-<!-- ✅ MENU -->
-<button onclick="showWordleMenu()">Wordle</button>
-<button onclick="startConnections()">Connections</button>
-<button onclick="restart()">Restart</button>
+<button onclick="showMenu()">New Wordle</button>
 
 <h3 id="message"></h3>
 <div id="controls"></div>
@@ -109,6 +84,7 @@ h1 { margin-bottom: 10px; }
 <script>
 /* =========================
    WORD LIST
+   (simple, visual words)
 ========================= */
 const WORDS = [
   "DOG","CAT","COW","PIG","BIRD","FISH",
@@ -121,60 +97,73 @@ const WORDS = [
 ];
 
 /* =========================
-   CONNECTION GROUPS
-========================= */
-const CONNECTION_GROUPS = [
-  ["DOG","CAT","COW","PIG"],
-  ["RUN","WALK","JUMP","SIT"],
-  ["MUM","DAD","BOY","GIRL"],
-  ["SUN","RAIN","WIND","COLD"]
-];
-
-/* =========================
-   WORDLE STATE
+   STATE
 ========================= */
 let answer = "";
 let options = [];
 let row = 0;
 
 /* =========================
-   WORDLE MENU
+   MENU
 ========================= */
-function showWordleMenu() {
+function showMenu() {
   controls.innerHTML = `
     <label><strong>Word length:</strong></label>
     <select id="lengthSelect">
       <option value="3">3 letters</option>
       <option value="4">4 letters</option>
       <option value="5" selected>5 letters</option>
-    </select><br>
-    <button onclick="startWordle(false)">New Wordle</button>
-    <button onclick="startWordle(true)">Daily Wordle</button>
+    </select><br><br>
+    <button onclick="startWordle()">Start Wordle</button>
   `;
   game.innerHTML = "";
-  message.textContent = "Choose New or Daily Wordle";
+  message.textContent = "Choose word length";
+}
+
+/* =========================
+   PICK 6 DISTINCT WORDS
+   (no shared last letters)
+========================= */
+function pickDistinctWords(pool, count) {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const chosen = [];
+  const usedEndings = new Set();
+
+  for (const word of shuffled) {
+    const ending = word.slice(-1);
+    if (!usedEndings.has(ending)) {
+      chosen.push(word);
+      usedEndings.add(ending);
+    }
+    if (chosen.length === count) break;
+  }
+
+  return chosen;
 }
 
 /* =========================
    START WORDLE
 ========================= */
-function startWordle(daily) {
+function startWordle() {
   row = 0;
   game.innerHTML = "";
 
   const len = Number(lengthSelect.value);
   const pool = WORDS.filter(w => w.length === len);
-  const seed = daily ? Math.floor(Date.now() / 86400000) : Math.random();
 
-  options = [...pool].sort(() => seed - 0.5).slice(0, 6);
-  answer = options[Math.floor(seed * options.length)];
+  options = pickDistinctWords(pool, 6);
+  answer = options[Math.floor(Math.random() * options.length)];
 
-  buildWordle(len);
+  buildGrid(len);
   showChoices();
+
   message.textContent = "Choose a word";
 }
 
-function buildWordle(len) {
+/* =========================
+   BUILD GRID
+========================= */
+function buildGrid(len) {
   const grid = document.createElement("div");
   grid.id = "wordleGrid";
 
@@ -188,9 +177,13 @@ function buildWordle(len) {
     }
     grid.appendChild(rowDiv);
   }
+
   game.appendChild(grid);
 }
 
+/* =========================
+   SHOW CHOICES
+========================= */
 function showChoices() {
   const div = document.createElement("div");
   div.id = "choices";
@@ -214,23 +207,25 @@ function showChoices() {
 ========================= */
 function submitGuess(word) {
   const tiles = wordleGrid.children[row].children;
-  const count = {};
+  const counts = {};
 
-  for (const c of answer) count[c] = (count[c] || 0) + 1;
+  for (const c of answer) counts[c] = (counts[c] || 0) + 1;
 
+  // correct letters
   for (let i = 0; i < answer.length; i++) {
     tiles[i].textContent = word[i];
     if (word[i] === answer[i]) {
       tiles[i].classList.add("correct");
-      count[word[i]]--;
+      counts[word[i]]--;
     }
   }
 
+  // misplaced / incorrect
   for (let i = 0; i < answer.length; i++) {
     if (tiles[i].classList.contains("correct")) continue;
-    if (count[word[i]] > 0) {
+    if (counts[word[i]] > 0) {
       tiles[i].classList.add("wrong");
-      count[word[i]]--;
+      counts[word[i]]--;
     } else {
       tiles[i].classList.add("incorrect");
     }
@@ -250,91 +245,16 @@ function submitGuess(word) {
   }
 }
 
+/* =========================
+   DISABLE BUTTONS
+========================= */
 function disableChoices() {
   document.querySelectorAll(".choiceBtn")
     .forEach(b => b.disabled = true);
 }
 
-/* =========================
-   CONNECTIONS
-========================= */
-let selected = [];
-let solved = 0;
-
-function startConnections() {
-  game.innerHTML = "";
-  controls.innerHTML = "";
-  message.textContent = "Select 4 matching words";
-
-  selected = [];
-  solved = 0;
-
-  const words = CONNECTION_GROUPS.flat().sort(() => Math.random() - 0.5);
-  const grid = document.createElement("div");
-  grid.className = "connectionsGrid";
-
-  words.forEach(word => {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.textContent = word;
-    tile.onclick = () => toggle(tile);
-    grid.appendChild(tile);
-  });
-
-  game.appendChild(grid);
-
-  const btn = document.createElement("button");
-  btn.textContent = "Submit Group";
-  btn.onclick = checkGroup;
-  game.appendChild(btn);
-}
-
-function toggle(tile) {
-  if (tile.classList.contains("solved")) return;
-  tile.classList.toggle("selected");
-
-  selected = [...document.querySelectorAll(".selected")];
-  if (selected.length > 4) {
-    selected[0].classList.remove("selected");
-  }
-}
-
-function checkGroup() {
-  if (selected.length !== 4) {
-    message.textContent = "Select 4 words";
-    return;
-  }
-
-  const words = selected.map(t => t.textContent);
-  const match = CONNECTION_GROUPS.find(
-    g => words.every(w => g.includes(w))
-  );
-
-  if (match) {
-    selected.forEach(t => {
-      t.classList.remove("selected");
-      t.classList.add("solved");
-      t.onclick = null;
-    });
-    solved++;
-    message.textContent = "✅ Correct group!";
-    if (solved === 4) message.textContent = "🎉 All groups solved!";
-  } else {
-    message.textContent = "❌ Not a group";
-    selected.forEach(t => t.classList.remove("selected"));
-  }
-
-  selected = [];
-}
-
-/* =========================
-   RESTART
-========================= */
-function restart() {
-  game.innerHTML = "";
-  controls.innerHTML = "";
-  message.textContent = "Choose a game";
-}
+/* Start with menu */
+showMenu();
 </script>
 
 </body>
