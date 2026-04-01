@@ -97,7 +97,7 @@ h1 { margin-bottom: 10px; }
 
 <h1>NZSL Wordle + Connections</h1>
 
-<!-- ✅ PERMANENT MENU -->
+<!-- ✅ MENU -->
 <button onclick="showWordleMenu()">Wordle</button>
 <button onclick="startConnections()">Connections</button>
 <button onclick="restart()">Restart</button>
@@ -108,20 +108,20 @@ h1 { margin-bottom: 10px; }
 
 <script>
 /* =========================
-   WORD LIST (≤5 letters)
+   WORD LIST
 ========================= */
 const WORDS = [
-"DOG","CAT","COW","PIG","BIRD","FISH",
-"RUN","WALK","JUMP","SIT",
-"MUM","DAD","BOY","GIRL",
-"SUN","RAIN","WIND","COLD",
-"APPLE","PEAR","MILK","CAKE",
-"CAR","BUS","BIKE","TRAIN",
-"BOOK","BAG","HAT","COAT"
+  "DOG","CAT","COW","PIG","BIRD","FISH",
+  "RUN","WALK","JUMP","SIT",
+  "MUM","DAD","BOY","GIRL",
+  "SUN","RAIN","WIND","COLD",
+  "APPLE","PEAR","MILK","CAKE",
+  "CAR","BUS","BIKE","TRAIN",
+  "BOOK","BAG","HAT","COAT"
 ];
 
 /* =========================
-   CONNECTION GROUPS (4×4)
+   CONNECTION GROUPS
 ========================= */
 const CONNECTION_GROUPS = [
   ["DOG","CAT","COW","PIG"],
@@ -160,20 +160,21 @@ function showWordleMenu() {
 ========================= */
 function startWordle(daily) {
   row = 0;
+  game.innerHTML = "";
+
   const len = Number(lengthSelect.value);
   const pool = WORDS.filter(w => w.length === len);
   const seed = daily ? Math.floor(Date.now() / 86400000) : Math.random();
 
   options = [...pool].sort(() => seed - 0.5).slice(0, 6);
-  answer = options[seed * options.length | 0];
+  answer = options[Math.floor(seed * options.length)];
 
   buildWordle(len);
   showChoices();
-  message.textContent = "Choose from the word list";
+  message.textContent = "Choose a word";
 }
 
 function buildWordle(len) {
-  game.innerHTML = "";
   const grid = document.createElement("div");
   grid.id = "wordleGrid";
 
@@ -181,6 +182,7 @@ function buildWordle(len) {
     const rowDiv = document.createElement("div");
     rowDiv.className = "wordleRow";
     rowDiv.style.gridTemplateColumns = `repeat(${len}, 50px)`;
+
     for (let i = 0; i < len; i++) {
       rowDiv.appendChild(document.createElement("div")).className = "tile";
     }
@@ -193,13 +195,13 @@ function showChoices() {
   const div = document.createElement("div");
   div.id = "choices";
 
-  options.forEach(w => {
+  options.forEach(word => {
     const b = document.createElement("button");
-    b.textContent = w;
+    b.textContent = word;
     b.className = "choiceBtn";
     b.onclick = () => {
       b.disabled = true;
-      submitGuess(w);
+      submitGuess(word);
     };
     div.appendChild(b);
   });
@@ -211,7 +213,6 @@ function showChoices() {
    WORDLE LOGIC
 ========================= */
 function submitGuess(word) {
-  if (row >= 6) return;
   const tiles = wordleGrid.children[row].children;
   const count = {};
 
@@ -226,5 +227,115 @@ function submitGuess(word) {
   }
 
   for (let i = 0; i < answer.length; i++) {
-    if (!tiles[i].classList.contains("correct")) {
+    if (tiles[i].classList.contains("correct")) continue;
+    if (count[word[i]] > 0) {
+      tiles[i].classList.add("wrong");
+      count[word[i]]--;
+    } else {
+      tiles[i].classList.add("incorrect");
+    }
+  }
 
+  if (word === answer) {
+    message.textContent = "✅ Correct!";
+    disableChoices();
+    return;
+  }
+
+  row++;
+
+  if (row === 6) {
+    message.textContent = `❌ The word was ${answer}`;
+    disableChoices();
+  }
+}
+
+function disableChoices() {
+  document.querySelectorAll(".choiceBtn")
+    .forEach(b => b.disabled = true);
+}
+
+/* =========================
+   CONNECTIONS
+========================= */
+let selected = [];
+let solved = 0;
+
+function startConnections() {
+  game.innerHTML = "";
+  controls.innerHTML = "";
+  message.textContent = "Select 4 matching words";
+
+  selected = [];
+  solved = 0;
+
+  const words = CONNECTION_GROUPS.flat().sort(() => Math.random() - 0.5);
+  const grid = document.createElement("div");
+  grid.className = "connectionsGrid";
+
+  words.forEach(word => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = word;
+    tile.onclick = () => toggle(tile);
+    grid.appendChild(tile);
+  });
+
+  game.appendChild(grid);
+
+  const btn = document.createElement("button");
+  btn.textContent = "Submit Group";
+  btn.onclick = checkGroup;
+  game.appendChild(btn);
+}
+
+function toggle(tile) {
+  if (tile.classList.contains("solved")) return;
+  tile.classList.toggle("selected");
+
+  selected = [...document.querySelectorAll(".selected")];
+  if (selected.length > 4) {
+    selected[0].classList.remove("selected");
+  }
+}
+
+function checkGroup() {
+  if (selected.length !== 4) {
+    message.textContent = "Select 4 words";
+    return;
+  }
+
+  const words = selected.map(t => t.textContent);
+  const match = CONNECTION_GROUPS.find(
+    g => words.every(w => g.includes(w))
+  );
+
+  if (match) {
+    selected.forEach(t => {
+      t.classList.remove("selected");
+      t.classList.add("solved");
+      t.onclick = null;
+    });
+    solved++;
+    message.textContent = "✅ Correct group!";
+    if (solved === 4) message.textContent = "🎉 All groups solved!";
+  } else {
+    message.textContent = "❌ Not a group";
+    selected.forEach(t => t.classList.remove("selected"));
+  }
+
+  selected = [];
+}
+
+/* =========================
+   RESTART
+========================= */
+function restart() {
+  game.innerHTML = "";
+  controls.innerHTML = "";
+  message.textContent = "Choose a game";
+}
+</script>
+
+</body>
+</html>
